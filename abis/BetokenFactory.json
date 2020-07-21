@@ -1,0 +1,328 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_daiAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_kyberAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_oneInchAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_betokenFund",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_betokenLogic",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_betokenLogic2",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_betokenLogic3",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_peakRewardAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_minimeFactoryAddr",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "fund",
+        "type": "address"
+      }
+    ],
+    "name": "CreateFund",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "fund",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "proxy",
+        "type": "address"
+      }
+    ],
+    "name": "InitFund",
+    "type": "event"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "betokenFund",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "betokenLogic",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "betokenLogic2",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "betokenLogic3",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "createFund",
+    "outputs": [
+      {
+        "internalType": "contract BetokenFund",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "daiAddr",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract BetokenFund",
+        "name": "fund",
+        "type": "address"
+      },
+      {
+        "internalType": "string",
+        "name": "kairoName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "kairoSymbol",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "sharesName",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "sharesSymbol",
+        "type": "string"
+      }
+    ],
+    "name": "initFund1",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract BetokenFund",
+        "name": "fund",
+        "type": "address"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_kyberTokens",
+        "type": "address[]"
+      },
+      {
+        "internalType": "address[]",
+        "name": "_compoundTokens",
+        "type": "address[]"
+      }
+    ],
+    "name": "initFund2",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract BetokenFund",
+        "name": "fund",
+        "type": "address"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_devFundingAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_devFundingRate",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256[2]",
+        "name": "_phaseLengths",
+        "type": "uint256[2]"
+      },
+      {
+        "internalType": "address",
+        "name": "_compoundFactoryAddr",
+        "type": "address"
+      }
+    ],
+    "name": "initFund3",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "kyberAddr",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "minimeFactory",
+    "outputs": [
+      {
+        "internalType": "contract MiniMeTokenFactory",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "oneInchAddr",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "peakRewardAddr",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ]
+  }
+]

@@ -7,7 +7,6 @@ import * as Utils from '../utils'
 
 export function handleTokenTransfer(event: TransferEvent): void {
   let contract = MiniMeToken.bind(event.address)
-  let fund = Fund.load(Utils.FUND_ID)
   if (contract.symbol().includes("BTKS")) {
     let to = event.params._to
     let investor = Investor.load(to.toHex())

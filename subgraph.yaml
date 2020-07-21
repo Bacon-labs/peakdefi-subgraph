@@ -3,14 +3,36 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: BetokenProxy
-    network: mainnet
+    name: BetokenFactory
+    network: rinkeby
     source:
-      address: '0xC7CbB403D1722EE3E4ae61f452Dc36d71E8800DE'
+      address: '0x95d965150545026BDdc2BFABe5f8D27d0D64C22f'
+      abi: BetokenFactory
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Fund
+        - FundRegistry
+      abis:
+        - name: BetokenFactory
+          file: ./abis/BetokenFactory.json
+        - name: BetokenProxy
+          file: ./abis/BetokenProxy.json
+      eventHandlers:
+        - event: InitFund(address,address)
+          handler: handleInitFund
+      file: ./src/mappings/betokenFactory.ts
+templates:
+  - kind: ethereum/contract
+    name: BetokenProxy
+    network: rinkeby
+    source:
       abi: BetokenProxy
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
         - Fund
@@ -26,22 +48,20 @@ dataSources:
         - event: UpdatedFundAddress(address)
           handler: handleUpdatedFundAddress
       file: ./src/mappings/betokenProxy.ts
-templates:
   - kind: ethereum/contract
     name: BetokenFund
-    network: mainnet
+    network: rinkeby
     source:
       abi: BetokenFund
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       file: ./src/mappings/betokenFund.ts
       entities:
         - Manager
         - BasicOrder
         - CompoundOrder
-        - FulcrumOrder
         - CommissionRedemption
         - Investor
         - DepositWithdraw
@@ -50,8 +70,6 @@ templates:
       abis:
         - name: CompoundOrder
           file: ./abis/CompoundOrder.json
-        - name: PositionToken
-          file: ./abis/PositionToken.json
         - name: MiniMeToken
           file: ./abis/MiniMeToken.json
         - name: BetokenFund
@@ -98,12 +116,12 @@ templates:
           handler: handleBurnDeadman
   - kind: ethereum/contract
     name: MiniMeToken
-    network: mainnet
+    network: rinkeby
     source:
       abi: MiniMeToken
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.3
+      apiVersion: 0.0.4
       language: wasm/assemblyscript
       file: ./src/mappings/miniMeToken.ts
       entities:

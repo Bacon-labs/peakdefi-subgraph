@@ -3,7 +3,7 @@ import {
 } from "../../generated/templates/BetokenFund/BetokenFund"
 import {
   UpdatedFundAddress as UpdatedFundAddressEvent
-} from "../../generated/BetokenProxy/BetokenProxy"
+} from "../../generated/templates/BetokenProxy/BetokenProxy"
 import {
   Fund
 } from "../../generated/schema"
@@ -12,18 +12,18 @@ import {
   BetokenFund as BetokenFundTemplate
 } from '../../generated/templates'
 import { MiniMeToken } from '../../generated/templates/MiniMeToken/MiniMeToken'
-import { BigDecimal, Address, BigInt } from '@graphprotocol/graph-ts'
+import { BigDecimal, Address, BigInt, DataSourceContext } from '@graphprotocol/graph-ts'
 
 import * as Utils from '../utils'
-import { Manager } from "../../generated/schema";
 
 // init fund handler
 
 export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
   // initialize fund entity
-  let fund_entity = Fund.load(Utils.FUND_ID)
+  let fundID = event.address.toHex()
+  let fund_entity = Fund.load(fundID)
   if (fund_entity == null) {
-    fund_entity = new Fund(Utils.FUND_ID)
+    fund_entity = new Fund(fundID)
     let fund = BetokenFund.bind(event.params._newFundAddr)
     let kairo = MiniMeToken.bind(fund.controlTokenAddr())
     let shares = MiniMeToken.bind(fund.shareTokenAddr())
@@ -47,33 +47,6 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
     fund_entity.startTimeOfCyclePhase = Utils.ZERO_INT
     fund_entity.cycleROIHistory = new Array<BigDecimal>();
     fund_entity.versionNum = Utils.ZERO_INT
-
-    for (let m = 0; m < Utils.INITIAL_MANAGERS.length; m++) {
-      let managerAddress = Utils.INITIAL_MANAGERS[m];
-      if (Manager.load(managerAddress) == null) {
-        let manager = new Manager(managerAddress)
-        manager.kairoBalance = Utils.normalize(kairo.balanceOf(Address.fromString(managerAddress)))
-        manager.kairoBalanceWithStake = manager.kairoBalance
-        manager.baseStake = manager.kairoBalance
-        manager.riskTaken = Utils.ZERO_DEC
-        manager.riskThreshold = manager.baseStake.times(Utils.RISK_THRESHOLD_TIME)
-        manager.lastCommissionRedemption = Utils.ZERO_INT
-        manager.basicOrders = new Array<string>()
-        manager.fulcrumOrders = new Array<string>()
-        manager.compoundOrders = new Array<string>()
-        manager.commissionHistory = new Array<string>()
-        manager.votes = new Array<string>()
-        manager.upgradeSignal = false
-        manager.totalCommissionReceived = Utils.ZERO_DEC
-        manager.roiHistory = new Array<string>()
-
-        manager.save()
-
-        let managers = fund_entity.managers
-        managers.push(manager.id)
-        fund_entity.managers = managers
-      }
-    }
     MiniMeTokenTemplate.create(fund.shareTokenAddr())
   } else {
     fund_entity.versionNum = fund_entity.versionNum.plus(BigInt.fromI32(1))
@@ -91,5 +64,7 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
   fund_entity.upgradeSignalStrength = Utils.ZERO_DEC
   fund_entity.save()
 
-  BetokenFundTemplate.create(event.params._newFundAddr)
+  let context = new DataSourceContext()
+  context.setString('ID', fundID)
+  BetokenFundTemplate.createWithContext(event.params._newFundAddr, context)
 }

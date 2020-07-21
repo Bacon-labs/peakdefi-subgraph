@@ -9,6 +9,12 @@ enum VoteDirection {
   AGAINST
 }
 
+type FundRegistry @entity {
+  id: ID! # 'FundRegistry'
+  numFunds: BigInt!
+  fundProxies: [String!]!
+}
+
 type Manager @entity {
   id: ID! # address
   kairoBalance: BigDecimal!
@@ -19,7 +25,6 @@ type Manager @entity {
   lastCommissionRedemption: BigInt!
   basicOrders: [BasicOrder!]!
   compoundOrders: [CompoundOrder!]!
-  fulcrumOrders: [FulcrumOrder!]!
   commissionHistory: [CommissionRedemption!]!
   totalCommissionReceived: BigDecimal!
   roiHistory: [ManagerROI!]!
@@ -68,26 +73,6 @@ type CompoundOrder @entity {
   txHash: String! # transaction hash of order creation
 }
 
-type FulcrumOrder @entity {
-  id: ID! # index in userInvestments[user] array + cycleNumber
-  idx: BigInt!
-  tokenAddress: String!
-  cycleNumber: BigInt!
-  stake: BigDecimal!
-  tokenAmount: BigDecimal!
-  rawTokenAmount: BigInt!
-  buyPrice: BigDecimal!
-  buyTokenPrice: BigDecimal! # the buy price of the token being traded (e.g. ETH, WBTC)
-  sellPrice: BigDecimal! # unit is underlyingToken/pToken
-  liquidationPrice: BigDecimal! # unit is underlyingToken/pToken
-  buyTime: BigInt!
-  sellTime: BigInt!
-  isSold: Boolean!
-  isShort: Boolean!
-  owner: String!
-  txHash: String! # transaction hash of order creation
-}
-
 type CommissionRedemption @entity {
   id: ID! # tx hash
   timestamp: BigInt!
@@ -111,7 +96,7 @@ type DepositWithdraw @entity {
 }
 
 type Fund @entity {
-  id: ID! # always BetokenFund
+  id: ID! # address of BetokenProxy
   address: String!
   cycleNumber: BigInt!
   cyclePhase: CyclePhase!
