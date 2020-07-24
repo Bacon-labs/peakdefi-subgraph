@@ -4,10 +4,10 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ Betoken/betoken-v1",
-    "create-local": "graph create --node http://localhost:8020/ Betoken/betoken-v1",
-    "remove-local": "graph remove --node http://localhost:8020/ Betoken/betoken-v1",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 Betoken/betoken-v1"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ bacon-labs/peakdefi-rinkeby",
+    "create-local": "graph create --node http://localhost:8020/ bacon-labs/peakdefi-rinkeby",
+    "remove-local": "graph remove --node http://localhost:8020/ bacon-labs/peakdefi-rinkeby",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 bacon-labs/peakdefi-rinkeby"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.18.0",
