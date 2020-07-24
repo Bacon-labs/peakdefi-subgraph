@@ -24,6 +24,62 @@ dataSources:
         - event: InitFund(address,address)
           handler: handleInitFund
       file: ./src/mappings/betokenFactory.ts
+  - kind: ethereum/contract
+    name: PeakReward
+    network: rinkeby
+    source:
+      address: '0x95d965150545026BDdc2BFABe5f8D27d0D64C22f'
+      abi: PeakReward
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - PeakUser
+        - PeakStakeEntry
+        - PeakActivity
+      abis:
+        - name: PeakReward
+          file: ./abis/PeakReward.json
+        - name: PeakStaking
+          file: ./abis/PeakStaking.json
+      eventHandlers:
+        - event: Register(address,address)
+          handler: handleRegister
+        - event: RankChange(address,uint256,uint256)
+          handler: handleRankChange
+        - event: PayCommission(address,address,address,uint256,uint8)
+          handler: handlePayCommission
+        - event: ChangedCareerValue(address,uint256,bool)
+          handler: handleChangedCareerValue
+      file: ./src/mappings/peakReward.ts
+  - kind: ethereum/contract
+    name: PeakStaking
+    network: rinkeby
+    source:
+      address: '0x95d965150545026BDdc2BFABe5f8D27d0D64C22f'
+      abi: PeakStaking
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - PeakUser
+        - PeakStakeEntry
+        - PeakActivity
+      abis:
+        - name: PeakReward
+          file: ./abis/PeakReward.json
+        - name: PeakStaking
+          file: ./abis/PeakStaking.json
+      eventHandlers:
+        - event: CreateStake(uint256,address,address,uint256,uint256,uint256)
+          handler: handleRegister
+        - event: WithdrawReward(uint256,address,uint256)
+          handler: handleRankChange
+        - event: WithdrawStake(uint256,address)
+          handler: handlePayCommission
+      file: ./src/mappings/peakStaking.ts
 templates:
   - kind: ethereum/contract
     name: BetokenProxy

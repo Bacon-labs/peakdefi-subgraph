@@ -147,3 +147,37 @@ type TokenPrice @entity {
   priceInDAI: BigDecimal!
   timestamp: BigInt!
 }
+
+type PeakUser @entity {
+  id: ID!
+  address: String!
+  referrer: PeakUser
+  rank: BigInt!
+  careerValue: BigDecimal!
+  referredUsers: [PeakUser!]! @derivedFrom(field: "referrer")
+  referLevelUserCounts: [BigInt!]!
+  stakeAmount: BigDecimal!
+  totalStakeReward: BigDecimal!
+  stakeList: [PeakStakeEntry!]! @derivedFrom(field: "staker")
+  stakeActivityHistory: [PeakActivity!]! @derivedFrom(field: "user")
+}
+
+type PeakStakeEntry @entity {
+  id: ID!
+  staker: PeakUser!
+  stakeAmount: BigDecimal!
+  interestAmount: BigDecimal!
+  withdrawnInterestAmount: BigDecimal!
+  stakeTimestamp: BigInt!
+  stakeTimeInDays: BigInt!
+  active: Boolean!
+}
+
+type PeakActivity @entity {
+  id: ID!
+  user: PeakUser!
+  type: String!
+  timestamp: BigInt!
+  txAmount: BigDecimal!
+  txHash: String!
+}
