@@ -148,6 +148,12 @@ type TokenPrice @entity {
   timestamp: BigInt!
 }
 
+type PeakStakingPool @entity {
+  id: ID!
+  mintedPeakTokens: BigDecimal!
+  stakeAmount: BigDecimal!
+}
+
 type PeakUser @entity {
   id: ID!
   address: String!
@@ -158,6 +164,7 @@ type PeakUser @entity {
   referLevelUserCounts: [BigInt!]!
   stakeAmount: BigDecimal!
   totalStakeReward: BigDecimal!
+  avgAPY: BigDecimal!
   stakeList: [PeakStakeEntry!]! @derivedFrom(field: "staker")
   stakeActivityHistory: [PeakActivity!]! @derivedFrom(field: "user")
 }
