@@ -3,7 +3,7 @@ import {
   RankChange as RankChangeEvent,
   PayCommission as PayCommissionEvent,
   ChangedCareerValue as ChangedCareerValueEvent
-} from '../../generated/PeakStaking/PeakStaking'
+} from '../../generated/PeakReward/PeakReward'
 import {
   PeakUser,
   PeakActivity

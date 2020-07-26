@@ -36,6 +36,8 @@ export let RECORD_INTERVAL = BigInt.fromI32(24 * 60 * 60 / 15) // 24 hours if av
 export let PRICE_INTERVAL = BigInt.fromI32(5 * 60 / 15) // 5 minutes if avg block time is 15 seconds
 export let LATEST_BLOCK = BigInt.fromI32(10000688 + 4200)
 
+export let PEAK_DECIMALS = 8
+
 // Helpers
 
 export function getFundEntity(context: DataSourceContext): Fund | null {
@@ -110,8 +112,8 @@ export function getPriceOfToken(tokenAddress: Address, tokenAmount: BigInt): Big
   }
 }
 
-export function normalize(i: BigInt): BigDecimal {
-  return i.toBigDecimal().div(PRECISION)
+export function normalize(i: BigInt, decimals: number = 18): BigDecimal {
+  return i.toBigDecimal().div(tenPow(decimals).toBigDecimal())
 }
 
 export function toKairoROI(investmentROI: BigDecimal): BigDecimal {

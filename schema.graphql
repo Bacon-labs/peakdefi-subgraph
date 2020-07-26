@@ -152,6 +152,7 @@ type PeakStakingPool @entity {
   id: ID!
   mintedPeakTokens: BigDecimal!
   stakeAmount: BigDecimal!
+  totalWithdrawnStakeReward: BigDecimal!
 }
 
 type PeakUser @entity {
@@ -164,6 +165,7 @@ type PeakUser @entity {
   referLevelUserCounts: [BigInt!]!
   stakeAmount: BigDecimal!
   totalStakeReward: BigDecimal!
+  totalWithdrawnStakeReward: BigDecimal!
   avgAPY: BigDecimal!
   stakeList: [PeakStakeEntry!]! @derivedFrom(field: "staker")
   stakeActivityHistory: [PeakActivity!]! @derivedFrom(field: "user")
@@ -171,6 +173,7 @@ type PeakUser @entity {
 
 type PeakStakeEntry @entity {
   id: ID!
+  idx: BigInt!
   staker: PeakUser!
   stakeAmount: BigDecimal!
   interestAmount: BigDecimal!
