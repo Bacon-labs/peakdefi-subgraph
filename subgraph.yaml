@@ -133,8 +133,8 @@ templates:
           file: ./abis/BetokenFund.json
         - name: KyberNetwork
           file: ./abis/KyberNetwork.json
-      blockHandlers:
-        - handler: handleBlock
+      #blockHandlers:
+      #  - handler: handleBlock
       eventHandlers:
         - event: ChangedPhase(indexed uint256,indexed uint256,uint256,uint256)
           handler: handleChangedPhase
@@ -168,8 +168,7 @@ templates:
           handler: handleVoted
         - event: FinalizedNextVersion(indexed uint256,address)
           handler: handleFinalizedNextVersion
-      callHandlers:
-        - function: burnDeadman(address)
+        - event: BurnDeadman(indexed address,uint256)
           handler: handleBurnDeadman
   - kind: ethereum/contract
     name: MiniMeToken

@@ -4,6 +4,25 @@
     "inputs": [
       {
         "indexed": true,
+        "internalType": "address",
+        "name": "_manager",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "_kairoBurned",
+        "type": "uint256"
+      }
+    ],
+    "name": "BurnDeadman",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
         "internalType": "uint256",
         "name": "_cycleNumber",
         "type": "uint256"
@@ -2722,21 +2741,6 @@
       }
     ],
     "name": "sellLeftoverCompoundOrder",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_tokenAddr",
-        "type": "address"
-      }
-    ],
-    "name": "sellLeftoverFulcrumToken",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",

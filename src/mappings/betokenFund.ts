@@ -15,7 +15,7 @@ import {
   ProposedCandidate as ProposedCandidateEvent,
   Voted as VotedEvent,
   FinalizedNextVersion as FinalizedNextVersionEvent,
-  BurnDeadmanCall,
+  BurnDeadman as BurnDeadmanEvent,
   BetokenFund,
 } from "../../generated/templates/BetokenFund/BetokenFund"
 
@@ -43,6 +43,7 @@ import { TokenInfo, KYBER_TOKENS } from '../kyber_tokens'
 // Handlers
 
 export function handleChangedPhase(event: ChangedPhaseEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context);
@@ -105,6 +106,7 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
 }
 
 export function handleDeposit(event: DepositEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let investor = Investor.load(event.transaction.from.toHex())
@@ -136,6 +138,7 @@ export function handleDeposit(event: DepositEvent): void {
 }
 
 export function handleWithdraw(event: WithdrawEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let investor = Investor.load(event.transaction.from.toHex())
@@ -166,6 +169,7 @@ export function handleWithdraw(event: WithdrawEvent): void {
 }
 
 export function handleCreatedInvestment(event: CreatedInvestmentEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let id = event.params._sender.toHex() + '-' + event.params._cycleNumber.toString() + '-' + event.params._id.toString()
@@ -207,6 +211,7 @@ export function handleCreatedInvestment(event: CreatedInvestmentEvent): void {
 }
 
 export function handleSoldInvestment(event: SoldInvestmentEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let fund = BetokenFund.bind(event.address)
@@ -237,6 +242,7 @@ export function handleSoldInvestment(event: SoldInvestmentEvent): void {
 export function handleCreatedCompoundOrder(
   event: CreatedCompoundOrderEvent
 ): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let id = event.params._sender.toHex() + '-' + event.params._cycleNumber.toString() + '-' + event.params._id.toString()
@@ -281,6 +287,7 @@ export function handleCreatedCompoundOrder(
 }
 
 export function handleSoldCompoundOrder(event: SoldCompoundOrderEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let id = event.params._sender.toHex() + '-' + event.params._cycleNumber.toString() + '-' + event.params._id.toString()
@@ -304,6 +311,7 @@ export function handleSoldCompoundOrder(event: SoldCompoundOrderEvent): void {
 }
 
 export function handleCommissionPaid(event: CommissionPaidEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = new CommissionRedemption(
@@ -325,6 +333,7 @@ export function handleCommissionPaid(event: CommissionPaidEvent): void {
 }
 
 export function handleTotalCommissionPaid(event: TotalCommissionPaidEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
@@ -333,6 +342,7 @@ export function handleTotalCommissionPaid(event: TotalCommissionPaidEvent): void
 }
 
 export function handleRegister(event: RegisterEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = new Manager(event.params._manager.toHex())
@@ -363,10 +373,11 @@ export function handleRegister(event: RegisterEvent): void {
   fund.save()
 }
 
-export function handleBurnDeadman(call: BurnDeadmanCall): void {
+export function handleBurnDeadman(event: BurnDeadmanEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
-  let managerAddr = call.inputs._deadman
+  let managerAddr = event.params._manager
   let manager = Manager.load(managerAddr.toHex());
   manager.kairoBalance = Utils.ZERO_DEC
   manager.baseStake = manager.kairoBalance
@@ -379,6 +390,7 @@ export function handleBurnDeadman(call: BurnDeadmanCall): void {
 }
 
 export function handleSignaledUpgrade(event: SignaledUpgradeEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let manager = Manager.load(event.params._sender.toHex())
@@ -394,6 +406,7 @@ export function handleSignaledUpgrade(event: SignaledUpgradeEvent): void {
 export function handleDeveloperInitiatedUpgrade(
   event: DeveloperInitiatedUpgradeEvent
 ): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
@@ -403,6 +416,7 @@ export function handleDeveloperInitiatedUpgrade(
 }
 
 export function handleInitiatedUpgrade(event: InitiatedUpgradeEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
@@ -411,6 +425,7 @@ export function handleInitiatedUpgrade(event: InitiatedUpgradeEvent): void {
 }
 
 export function handleProposedCandidate(event: ProposedCandidateEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
@@ -427,6 +442,7 @@ export function handleProposedCandidate(event: ProposedCandidateEvent): void {
 }
 
 export function handleVoted(event: VotedEvent): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
@@ -453,6 +469,7 @@ export function handleVoted(event: VotedEvent): void {
 export function handleFinalizedNextVersion(
   event: FinalizedNextVersionEvent
 ): void {
+  handleBlock(event.block)
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
