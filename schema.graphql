@@ -161,8 +161,12 @@ type PeakUser @entity {
   referrer: PeakUser
   rank: BigInt!
   careerValue: BigDecimal!
+  totalDaiCommissionReceived: BigDecimal!
+  totalPeakCommissionReceived: BigDecimal!
   referredUsers: [PeakUser!]! @derivedFrom(field: "referrer")
   referLevelUserCounts: [BigInt!]!
+  referLevelDaiCommissions: [BigDecimal!]!
+  referLevelPeakCommissions: [BigDecimal!]!
   stakeAmount: BigDecimal!
   totalStakeReward: BigDecimal!
   totalWithdrawnStakeReward: BigDecimal!
@@ -190,4 +194,5 @@ type PeakActivity @entity {
   timestamp: BigInt!
   txAmount: BigDecimal!
   txHash: String!
+  token: String
 }

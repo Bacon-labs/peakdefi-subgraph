@@ -32,7 +32,19 @@ function getUser(address: Address): PeakUser {
     entity.referrer = null
     entity.rank = Utils.ZERO_INT
     entity.careerValue = Utils.ZERO_DEC
-    entity.referLevelUserCounts = new Array<BigInt>(8)
+    entity.totalDaiCommissionReceived = Utils.ZERO_DEC
+    entity.totalPeakCommissionReceived = Utils.ZERO_DEC
+    let newArray = new Array<BigInt>(8)
+    for (let i = 0; i < 8; i++) {
+      newArray[i] = Utils.ZERO_INT
+    }
+    entity.referLevelUserCounts = newArray
+    let newDecArray = new Array<BigDecimal>(8)
+    for (let i = 0; i < 8; i++) {
+      newDecArray[i] = Utils.ZERO_DEC
+    }
+    entity.referLevelDaiCommissions = newDecArray
+    entity.referLevelPeakCommissions = newDecArray
     entity.stakeAmount = Utils.ZERO_DEC
     entity.totalStakeReward = Utils.ZERO_DEC
     entity.totalWithdrawnStakeReward = Utils.ZERO_DEC
