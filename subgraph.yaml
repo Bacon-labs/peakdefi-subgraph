@@ -6,7 +6,7 @@ dataSources:
     name: BetokenFactory
     network: rinkeby
     source:
-      address: '0x95d965150545026BDdc2BFABe5f8D27d0D64C22f'
+      address: '0x607d9dc39bC1DA7907F7B524b6b63d57B60640e4'
       abi: BetokenFactory
     mapping:
       kind: ethereum/events
@@ -28,7 +28,7 @@ dataSources:
     name: PeakReward
     network: rinkeby
     source:
-      address: '0x95d965150545026BDdc2BFABe5f8D27d0D64C22f'
+      address: '0xAd362Ac437c6576A12d8f9bD8F7b0028202C7336'
       abi: PeakReward
     mapping:
       kind: ethereum/events
@@ -57,7 +57,7 @@ dataSources:
     name: PeakStaking
     network: rinkeby
     source:
-      address: '0x95d965150545026BDdc2BFABe5f8D27d0D64C22f'
+      address: '0x5C3B003a140A89161756834d774c5fC7e97DE083'
       abi: PeakStaking
     mapping:
       kind: ethereum/events
