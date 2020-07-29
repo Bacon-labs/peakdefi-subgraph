@@ -47,6 +47,11 @@ export function getFundEntity(context: DataSourceContext): Fund | null {
   return Fund.load(fundID)
 }
 
+export function getFundID(context: DataSourceContext): string {
+  let fundID = context.getString('ID')
+  return fundID
+}
+
 export function updateTotalFunds(context: DataSourceContext): void {
   let fundID = context.getString('ID')
   let fund = Fund.load(fundID)

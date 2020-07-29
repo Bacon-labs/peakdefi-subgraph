@@ -45,6 +45,7 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
     fund_entity.cycleNumber = fund.cycleNumber()
     fund_entity.cyclePhase = Utils.CyclePhase[fund.cyclePhase()]
     fund_entity.startTimeOfCyclePhase = Utils.ZERO_INT
+    fund_entity.phaseLengths = fund.getPhaseLengths()
     fund_entity.cycleROIHistory = new Array<BigDecimal>();
     fund_entity.versionNum = Utils.ZERO_INT
     MiniMeTokenTemplate.create(fund.shareTokenAddr())
