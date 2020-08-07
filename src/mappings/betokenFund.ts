@@ -116,6 +116,7 @@ export function handleDeposit(event: DepositEvent): void {
   if (investor == null) {
     investor = new Investor(Utils.getFundID(context) + '-' + event.params._sender.toHex())
     investor.fund = Utils.getFundID(context)
+    investor.address = event.params._sender.toHex()
     investor.depositWithdrawHistory = new Array<string>()
     investor.sharesBalance = Utils.ZERO_DEC
     investor.save()
@@ -355,6 +356,7 @@ export function handleRegister(event: RegisterEvent): void {
 
   let entity = new Manager(Utils.getFundID(context) + '-' + event.params._manager.toHex())
   entity.fund = Utils.getFundID(context)
+  entity.address = event.params._manager.toHex()
   entity.kairoBalance = Utils.normalize(event.params._kairoReceived)
   entity.kairoBalanceWithStake = entity.kairoBalance
   entity.baseStake = entity.kairoBalance

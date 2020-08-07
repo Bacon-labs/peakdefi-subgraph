@@ -81,6 +81,7 @@ export function handleCreateStake(event: CreateStakeEvent): void {
   entity.stakeTimestamp = event.block.timestamp
   entity.stakeTimeInDays = event.params.stakeTimeInDays
   entity.active = true
+  entity.apy = entity.interestAmount.times(BigDecimal.fromString('365')).div(entity.stakeTimeInDays.toBigDecimal()).div(entity.stakeAmount)
   entity.save()
 
   // update user

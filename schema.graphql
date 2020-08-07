@@ -18,6 +18,7 @@ type FundRegistry @entity {
 type Manager @entity {
   id: ID! # address
   fund: Fund!
+  address: String!
   kairoBalance: BigDecimal!
   kairoBalanceWithStake: BigDecimal!
   baseStake: BigDecimal!
@@ -88,6 +89,7 @@ type CommissionRedemption @entity {
 type Investor @entity {
   id: ID! # address
   fund: Fund!
+  address: String!
   sharesBalance: BigDecimal!
   depositWithdrawHistory: [DepositWithdraw!]!
 }
@@ -192,6 +194,7 @@ type PeakStakeEntry @entity {
   withdrawnInterestAmount: BigDecimal!
   stakeTimestamp: BigInt!
   stakeTimeInDays: BigInt!
+  apy: BigDecimal!
   active: Boolean!
 }
 
