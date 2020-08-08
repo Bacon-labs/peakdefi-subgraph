@@ -182,7 +182,7 @@ type PeakUser @entity {
   totalWithdrawnStakeReward: BigDecimal!
   avgAPY: BigDecimal!
   stakeList: [PeakStakeEntry!]! @derivedFrom(field: "staker")
-  stakeActivityHistory: [PeakActivity!]! @derivedFrom(field: "user")
+  activityHistory: [PeakActivity!]! @derivedFrom(field: "user")
 }
 
 type PeakStakeEntry @entity {
@@ -201,6 +201,7 @@ type PeakStakeEntry @entity {
 type PeakActivity @entity {
   id: ID!
   user: PeakUser!
+  isStake: Boolean!
   type: String!
   timestamp: BigInt!
   txAmount: BigDecimal!

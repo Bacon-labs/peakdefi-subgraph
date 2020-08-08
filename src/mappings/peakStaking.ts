@@ -102,6 +102,7 @@ export function handleCreateStake(event: CreateStakeEvent): void {
   activity.timestamp = event.block.timestamp
   activity.txAmount = entity.stakeAmount
   activity.txHash = event.transaction.hash.toHex()
+  activity.isStake = true
   activity.save()
 }
 
@@ -131,6 +132,7 @@ export function handleWithdrawReward(event: WithdrawRewardEvent): void {
   activity.timestamp = event.block.timestamp
   activity.txAmount = rewardAmount
   activity.txHash = event.transaction.hash.toHex()
+  activity.isStake = true
   activity.save()
 }
 
@@ -159,5 +161,6 @@ export function handleWithdrawStake(event: WithdrawStakeEvent): void {
   activity.timestamp = event.block.timestamp
   activity.txAmount = entry.stakeAmount
   activity.txHash = event.transaction.hash.toHex()
+  activity.isStake = true
   activity.save()
 }

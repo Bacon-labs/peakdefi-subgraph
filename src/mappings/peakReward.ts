@@ -87,6 +87,7 @@ export function handlePayCommission(event: PayCommissionEvent): void {
   activity.txAmount = Utils.normalize(event.params.amount, decimals)
   activity.txHash = event.transaction.hash.toHex()
   activity.token = event.params.token.toHex()
+  activity.isStake = false
   activity.save()
 
   // update user
