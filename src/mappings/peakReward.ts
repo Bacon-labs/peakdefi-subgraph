@@ -6,7 +6,8 @@ import {
 } from '../../generated/PeakReward/PeakReward'
 import {
   PeakUser,
-  PeakActivity
+  PeakActivity,
+  PeakCommission
 } from '../../generated/schema'
 import * as Utils from '../utils'
 import { Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts'
@@ -79,15 +80,14 @@ export function handlePayCommission(event: PayCommissionEvent): void {
   let user = getUser(event.params.receipient)
 
   // add activity entry
-  let activity = new PeakActivity('PeakActivity' + '-' + user.id + '-' + event.transaction.hash.toHex() + '-' + event.transactionLogIndex.toString())
+  let activity = new PeakCommission('PeakActivity' + '-' + user.id + '-' + event.transaction.hash.toHex() + '-' + event.transactionLogIndex.toString())
   activity.user = user.id
-  activity.type = 'PayCommission'
   activity.timestamp = event.block.timestamp
   let decimals = Utils.getTokenDecimals(event.params.token)
   activity.txAmount = Utils.normalize(event.params.amount, decimals)
-  activity.txHash = event.transaction.hash.toHex()
   activity.token = event.params.token.toHex()
-  activity.isStake = false
+  activity.receipient = event.params.receipient.toHex()
+  activity.level = BigInt.fromI32(event.params.level).plus(Utils.ONE_INT)
   activity.save()
 
   // update user

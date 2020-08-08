@@ -201,10 +201,18 @@ type PeakStakeEntry @entity {
 type PeakActivity @entity {
   id: ID!
   user: PeakUser!
-  isStake: Boolean!
   type: String!
   timestamp: BigInt!
   txAmount: BigDecimal!
   txHash: String!
-  token: String
+}
+
+type PeakCommission @entity {
+  id: ID!
+  user: PeakUser!
+  receipient: PeakUser!
+  timestamp: BigInt!
+  txAmount: BigDecimal!
+  token: String!
+  level: BigInt!
 }
