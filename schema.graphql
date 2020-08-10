@@ -184,7 +184,7 @@ type PeakUser @entity {
   avgAPY: BigDecimal!
   stakeList: [PeakStakeEntry!]!
   stakeActivityHistory: [PeakActivity!]! @derivedFrom(field: "user")
-  commissionHistory: [PeakCommission!]! @derivedFrom(field: "receipient")
+  commissionHistory: [PeakCommission!]! @derivedFrom(field: "recipient")
 }
 
 type PeakStakeEntry @entity {
@@ -212,7 +212,7 @@ type PeakActivity @entity {
 type PeakCommission @entity {
   id: ID!
   user: PeakUser!
-  receipient: PeakUser!
+  recipient: PeakUser!
   timestamp: BigInt!
   txAmount: BigDecimal!
   token: String!

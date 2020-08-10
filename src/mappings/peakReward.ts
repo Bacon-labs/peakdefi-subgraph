@@ -78,32 +78,33 @@ export function handleRankChange(event: RankChangeEvent): void {
 }
 
 export function handlePayCommission(event: PayCommissionEvent): void {
-  let user = getUser(event.params.receipient)
+  let user = getUser(event.params.referrer)
+  let recipient = getUser(event.params.recipient)
 
   // add activity entry
-  let activity = new PeakCommission('PeakActivity' + '-' + user.id + '-' + event.transaction.hash.toHex() + '-' + event.transactionLogIndex.toString())
+  let activity = new PeakCommission('PeakCommission' + '-' + user.id + '-' + event.transaction.hash.toHex() + '-' + event.transactionLogIndex.toString())
   activity.user = user.id
   activity.timestamp = event.block.timestamp
   let decimals = Utils.getTokenDecimals(event.params.token)
   activity.txAmount = Utils.normalize(event.params.amount, decimals)
   activity.token = event.params.token.toHex()
-  activity.receipient = event.params.receipient.toHex()
+  activity.recipient = event.params.recipient.toHex()
   activity.level = BigInt.fromI32(event.params.level).plus(Utils.ONE_INT)
   activity.save()
 
-  // update user
+  // update recipient
   if (event.params.token.equals(Utils.DAI_ADDR)) {
-    user.totalDaiCommissionReceived = user.totalDaiCommissionReceived.plus(activity.txAmount)
-    let referLevelDaiCommissions = user.referLevelDaiCommissions
+    recipient.totalDaiCommissionReceived = recipient.totalDaiCommissionReceived.plus(activity.txAmount)
+    let referLevelDaiCommissions = recipient.referLevelDaiCommissions
     referLevelDaiCommissions[event.params.level] = referLevelDaiCommissions[event.params.level].plus(activity.txAmount)
-    user.referLevelDaiCommissions = referLevelDaiCommissions
+    recipient.referLevelDaiCommissions = referLevelDaiCommissions
   } else {
-    user.totalPeakCommissionReceived = user.totalPeakCommissionReceived.plus(activity.txAmount)
-    let referLevelPeakCommissions = user.referLevelPeakCommissions
+    recipient.totalPeakCommissionReceived = recipient.totalPeakCommissionReceived.plus(activity.txAmount)
+    let referLevelPeakCommissions = recipient.referLevelPeakCommissions
     referLevelPeakCommissions[event.params.level] = referLevelPeakCommissions[event.params.level].plus(activity.txAmount)
-    user.referLevelPeakCommissions = referLevelPeakCommissions
+    recipient.referLevelPeakCommissions = referLevelPeakCommissions
   }
-  user.save()
+  recipient.save()
 }
 
 export function handleChangedCareerValue(event: ChangedCareerValueEvent): void {

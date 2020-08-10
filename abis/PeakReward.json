@@ -53,7 +53,7 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "receipient",
+        "name": "recipient",
         "type": "address"
       },
       {
