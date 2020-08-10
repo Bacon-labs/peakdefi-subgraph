@@ -6,9 +6,9 @@ dataSources:
     name: BetokenFactory
     network: rinkeby
     source:
-      address: '0x607d9dc39bC1DA7907F7B524b6b63d57B60640e4'
+      address: '0xc50F11DDf9F29A96265b0041ECE7FaA63a71845D'
       abi: BetokenFactory
-      startBlock: 6909150
+      startBlock: 6986000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -29,9 +29,9 @@ dataSources:
     name: PeakReward
     network: rinkeby
     source:
-      address: '0xAd362Ac437c6576A12d8f9bD8F7b0028202C7336'
+      address: '0x0922f5c414eb66a220c26Abb691784c5818E8EF6'
       abi: PeakReward
-      startBlock: 6909150
+      startBlock: 6986000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -45,6 +45,8 @@ dataSources:
           file: ./abis/PeakReward.json
         - name: PeakStaking
           file: ./abis/PeakStaking.json
+        - name: MiniMeToken
+          file: ./abis/MiniMeToken.json
       eventHandlers:
         - event: Register(address,address)
           handler: handleRegister
@@ -59,9 +61,9 @@ dataSources:
     name: PeakStaking
     network: rinkeby
     source:
-      address: '0x5C3B003a140A89161756834d774c5fC7e97DE083'
+      address: '0x4bE188ec9fCa36e4a15BC254c96862235886d08e'
       abi: PeakStaking
-      startBlock: 6909150
+      startBlock: 6986000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -76,13 +78,15 @@ dataSources:
           file: ./abis/PeakReward.json
         - name: PeakStaking
           file: ./abis/PeakStaking.json
+        - name: MiniMeToken
+          file: ./abis/MiniMeToken.json
       eventHandlers:
         - event: CreateStake(uint256,address,address,uint256,uint256,uint256)
-          handler: handleRegister
+          handler: handleCreateStake
         - event: WithdrawReward(uint256,address,uint256)
-          handler: handleRankChange
+          handler: handleWithdrawReward
         - event: WithdrawStake(uint256,address)
-          handler: handlePayCommission
+          handler: handleWithdrawStake
       file: ./src/mappings/peakStaking.ts
 templates:
   - kind: ethereum/contract

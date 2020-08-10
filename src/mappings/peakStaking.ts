@@ -1,7 +1,8 @@
 import {
   CreateStake as CreateStakeEvent,
   WithdrawReward as WithdrawRewardEvent,
-  WithdrawStake as WithdrawStakeEvent
+  WithdrawStake as WithdrawStakeEvent,
+  PeakStaking
 } from '../../generated/PeakStaking/PeakStaking'
 import {
   PeakStakingPool,
@@ -12,13 +13,17 @@ import {
 import * as Utils from '../utils'
 import { Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts'
 
-function getStakingPool(): PeakStakingPool {
+function getStakingPool(peakStakingAddr: Address): PeakStakingPool {
   let pool = PeakStakingPool.load('PeakStakingPool')
   if (pool == null) {
     pool = new PeakStakingPool('PeakStakingPool')
     pool.mintedPeakTokens = Utils.ZERO_DEC
     pool.stakeAmount = Utils.ZERO_DEC
     pool.totalWithdrawnStakeReward = Utils.ZERO_DEC
+
+    let peakStakingContract = PeakStaking.bind(peakStakingAddr)
+    pool.peakTokenAddress = peakStakingContract.peakToken().toHex()
+
     pool.save()
   }
   return pool as PeakStakingPool
@@ -49,6 +54,7 @@ function getUser(address: Address): PeakUser {
     entity.totalStakeReward = Utils.ZERO_DEC
     entity.totalWithdrawnStakeReward = Utils.ZERO_DEC
     entity.avgAPY = Utils.ZERO_DEC
+    entity.stakeList = new Array<string>()
     entity.save()
   }
   return entity as PeakUser
@@ -68,7 +74,7 @@ function calcUserAvgAPY(user: PeakUser): BigDecimal {
 }
 
 export function handleCreateStake(event: CreateStakeEvent): void {
-  let peakStakingPool = getStakingPool()
+  let peakStakingPool = getStakingPool(event.address)
   let user = getUser(event.params.user)
 
   // create stake entry
@@ -85,8 +91,12 @@ export function handleCreateStake(event: CreateStakeEvent): void {
   entity.save()
 
   // update user
+
   user.stakeAmount = user.stakeAmount.plus(entity.stakeAmount)
   user.totalStakeReward = user.totalStakeReward.plus(entity.interestAmount)
+  let stakeList = user.stakeList
+  stakeList.push(entity.id)
+  user.stakeList = stakeList
   user.avgAPY = calcUserAvgAPY(user)
   user.save()
 
@@ -106,7 +116,7 @@ export function handleCreateStake(event: CreateStakeEvent): void {
 }
 
 export function handleWithdrawReward(event: WithdrawRewardEvent): void {
-  let peakStakingPool = getStakingPool()
+  let peakStakingPool = getStakingPool(event.address)
   let user = getUser(event.params.user)
   let entry = PeakStakeEntry.load('PeakStakeEntry' + '-' + event.params.idx.toString())
 
@@ -135,7 +145,7 @@ export function handleWithdrawReward(event: WithdrawRewardEvent): void {
 }
 
 export function handleWithdrawStake(event: WithdrawStakeEvent): void {
-  let peakStakingPool = getStakingPool()
+  let peakStakingPool = getStakingPool(event.address)
   let user = getUser(event.params.user)
   let entry = PeakStakeEntry.load('PeakStakeEntry' + '-' + event.params.idx.toString())
 

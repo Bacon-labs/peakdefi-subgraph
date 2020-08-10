@@ -10,7 +10,7 @@ import {
   PeakCommission
 } from '../../generated/schema'
 import * as Utils from '../utils'
-import { Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts'
+import { Address, BigInt, BigDecimal, log } from '@graphprotocol/graph-ts'
 
 function getUser(address: Address): PeakUser {
   let entity = PeakUser.load(address.toHex())
@@ -37,6 +37,7 @@ function getUser(address: Address): PeakUser {
     entity.totalStakeReward = Utils.ZERO_DEC
     entity.totalWithdrawnStakeReward = Utils.ZERO_DEC
     entity.avgAPY = Utils.ZERO_DEC
+    entity.stakeList = new Array<string>()
     entity.save()
   }
   return entity as PeakUser
