@@ -56,13 +56,13 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
   fund_entity.address = event.params._newFundAddr.toHex()
   fund_entity.lastProcessedBlock = event.block.number
   fund_entity.hasFinalizedNextVersion = false
-  fund_entity.upgradeVotingActive = false
   fund_entity.nextVersion = ""
+  /*fund_entity.upgradeVotingActive = false
   fund_entity.proposers = new Array<string>()
   fund_entity.candidates = new Array<string>()
   fund_entity.forVotes = new Array<BigDecimal>()
   fund_entity.againstVotes = new Array<BigDecimal>()
-  fund_entity.upgradeSignalStrength = Utils.ZERO_DEC
+  fund_entity.upgradeSignalStrength = Utils.ZERO_DEC*/
   fund_entity.save()
 
   let context = new DataSourceContext()

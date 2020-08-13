@@ -66,12 +66,12 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
   entity.cycleNumber = event.params._cycleNumber
   entity.cyclePhase = Utils.CyclePhase[event.params._newPhase.toI32()]
   entity.startTimeOfCyclePhase = event.block.timestamp
-  entity.candidates = new Array<string>()
+  /*entity.candidates = new Array<string>()
   entity.proposers = new Array<string>()
   entity.forVotes = new Array<BigDecimal>()
   entity.againstVotes = new Array<BigDecimal>()
   entity.upgradeVotingActive = fund.upgradeVotingActive()
-  entity.upgradeSignalStrength = Utils.normalize(fund.upgradeSignalStrength(entity.cycleNumber))
+  entity.upgradeSignalStrength = Utils.normalize(fund.upgradeSignalStrength(entity.cycleNumber))*/
   entity.nextVersion = fund.nextVersion().toHex()
   entity.totalFundsAtPhaseStart = entity.totalFundsInDAI
   entity.save()
@@ -133,7 +133,7 @@ export function handleDeposit(event: DepositEvent): void {
   entity.save()
 
   
-  investor.sharesBalance = Utils.normalize(shares.balanceOf(Address.fromString(investor.id)))
+  investor.sharesBalance = Utils.normalize(shares.balanceOf(Address.fromString(investor.address)))
   let history = investor.depositWithdrawHistory
   history.push(entity.id)
   investor.depositWithdrawHistory = history
@@ -165,7 +165,7 @@ export function handleWithdraw(event: WithdrawEvent): void {
   entity.txHash = event.transaction.hash.toHex()
   entity.save()
 
-  investor.sharesBalance = Utils.normalize(shares.balanceOf(Address.fromString(investor.id)))
+  investor.sharesBalance = Utils.normalize(shares.balanceOf(Address.fromString(investor.address)))
   let history = investor.depositWithdrawHistory
   history.push(entity.id)
   investor.depositWithdrawHistory = history
@@ -400,7 +400,7 @@ export function handleBurnDeadman(event: BurnDeadmanEvent): void {
   manager.save()
 }
 
-export function handleSignaledUpgrade(event: SignaledUpgradeEvent): void {
+/*export function handleSignaledUpgrade(event: SignaledUpgradeEvent): void {
   handleBlock(event.block)
   let context = dataSource.context()
 
@@ -412,7 +412,7 @@ export function handleSignaledUpgrade(event: SignaledUpgradeEvent): void {
   let fund = BetokenFund.bind(event.address)
   entity.upgradeSignalStrength = Utils.normalize(fund.upgradeSignalStrength(entity.cycleNumber))
   entity.save()
-}
+}*/
 
 export function handleDeveloperInitiatedUpgrade(
   event: DeveloperInitiatedUpgradeEvent
@@ -421,12 +421,12 @@ export function handleDeveloperInitiatedUpgrade(
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
-  entity.upgradeVotingActive = true
+  //entity.upgradeVotingActive = true
   entity.nextVersion = event.params._candidate.toHex()
   entity.save()
 }
 
-export function handleInitiatedUpgrade(event: InitiatedUpgradeEvent): void {
+/*export function handleInitiatedUpgrade(event: InitiatedUpgradeEvent): void {
   handleBlock(event.block)
   let context = dataSource.context()
 
@@ -475,7 +475,7 @@ export function handleVoted(event: VotedEvent): void {
   }
   manager.votes = votes
   manager.save()
-}
+}*/
 
 export function handleFinalizedNextVersion(
   event: FinalizedNextVersionEvent

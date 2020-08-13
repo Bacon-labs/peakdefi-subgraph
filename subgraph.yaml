@@ -6,7 +6,7 @@ dataSources:
     name: BetokenFactory
     network: rinkeby
     source:
-      address: '0xc50F11DDf9F29A96265b0041ECE7FaA63a71845D'
+      address: '0x83f3F5ADD91d16642F2B0b9dCCbBD7fAdB1E9Be9'
       abi: BetokenFactory
       startBlock: 6986000
     mapping:
@@ -29,7 +29,7 @@ dataSources:
     name: PeakReward
     network: rinkeby
     source:
-      address: '0x0922f5c414eb66a220c26Abb691784c5818E8EF6'
+      address: '0x0Ff97AdE2DF9d04D2c65ACFde69e56B5a9569Bb2'
       abi: PeakReward
       startBlock: 6986000
     mapping:
@@ -61,7 +61,7 @@ dataSources:
     name: PeakStaking
     network: rinkeby
     source:
-      address: '0x4bE188ec9fCa36e4a15BC254c96862235886d08e'
+      address: '0x4Cade68b301AC84d94Ac54E332b796C0E9D70A90'
       abi: PeakStaking
       startBlock: 6986000
     mapping:
@@ -193,6 +193,8 @@ templates:
       abis:
         - name: MiniMeToken
           file: ./abis/MiniMeToken.json
+        - name: BetokenFund
+          file: ./abis/BetokenFund.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTokenTransfer

@@ -125,13 +125,13 @@ type Fund @entity {
   cycleROIHistory: [BigDecimal!]!
   # upgrade governance related
   hasFinalizedNextVersion: Boolean!
-  upgradeVotingActive: Boolean!
+  #upgradeVotingActive: Boolean!
   nextVersion: String!
-  proposers: [String!]!
-  candidates: [String!]!
-  forVotes: [BigDecimal!]!
-  againstVotes: [BigDecimal!]!
-  upgradeSignalStrength: BigDecimal!
+  #proposers: [String!]!
+  #candidates: [String!]!
+  #forVotes: [BigDecimal!]!
+  #againstVotes: [BigDecimal!]!
+  #upgradeSignalStrength: BigDecimal!
   versionNum: BigInt!
 }
 
