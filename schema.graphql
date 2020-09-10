@@ -30,8 +30,8 @@ type Manager @entity {
   commissionHistory: [CommissionRedemption!]!
   totalCommissionReceived: BigDecimal!
   roiHistory: [ManagerROI!]!
-  upgradeSignal: Boolean!
-  votes: [VoteDirection!]!
+  #upgradeSignal: Boolean!
+  #votes: [VoteDirection!]!
 }
 
 type BasicOrder @entity {

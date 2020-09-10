@@ -6,7 +6,6 @@ import {
 } from '../../generated/PeakReward/PeakReward'
 import {
   PeakUser,
-  PeakActivity,
   PeakCommission
 } from '../../generated/schema'
 import * as Utils from '../utils'
@@ -17,7 +16,7 @@ function getUser(address: Address): PeakUser {
   if (entity == null) {
     entity = new PeakUser(address.toHex())
     entity.address = address.toHex()
-    entity.referrer = null
+    entity.referrer = ''
     entity.rank = Utils.ZERO_INT
     entity.careerValue = Utils.ZERO_DEC
     entity.totalDaiCommissionReceived = Utils.ZERO_DEC
@@ -57,8 +56,8 @@ export function handleRegister(event: RegisterEvent): void {
   // update referrer
   let ptr = referrer.id
   let level = 0
-  while (ptr != null && level < 8) {
-    let ptrEntity = PeakUser.load(ptr)
+  while (ptr.length > 0 && level < 8) {
+    let ptrEntity = getUser(Address.fromString(ptr))
     let userCounts = ptrEntity.referLevelUserCounts
     userCounts[level] = userCounts[level].plus(Utils.ONE_INT)
     ptrEntity.referLevelUserCounts = userCounts

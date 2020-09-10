@@ -11,7 +11,7 @@ import {
   PeakActivity
 } from '../../generated/schema'
 import * as Utils from '../utils'
-import { Address, BigInt, BigDecimal } from '@graphprotocol/graph-ts'
+import { Address, BigInt, BigDecimal, log } from '@graphprotocol/graph-ts'
 
 function getStakingPool(peakStakingAddr: Address): PeakStakingPool {
   let pool = PeakStakingPool.load('PeakStakingPool')
@@ -34,7 +34,7 @@ function getUser(address: Address): PeakUser {
   if (entity == null) {
     entity = new PeakUser(address.toHex())
     entity.address = address.toHex()
-    entity.referrer = null
+    entity.referrer = ''
     entity.rank = Utils.ZERO_INT
     entity.careerValue = Utils.ZERO_DEC
     entity.totalDaiCommissionReceived = Utils.ZERO_DEC

@@ -100,8 +100,8 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
     manager.kairoBalanceWithStake = manager.kairoBalance
     manager.riskTaken = Utils.ZERO_DEC
     manager.riskThreshold = manager.baseStake.times(Utils.RISK_THRESHOLD_TIME)
-    manager.upgradeSignal = false;
-    manager.votes = new Array<string>();
+    //manager.upgradeSignal = false;
+    //manager.votes = new Array<string>();
     manager.save()
   }
 }
@@ -367,8 +367,8 @@ export function handleRegister(event: RegisterEvent): void {
   entity.compoundOrders = new Array<string>()
   entity.commissionHistory = new Array<string>()
   entity.roiHistory = new Array<string>()
-  entity.votes = new Array<string>()
-  entity.upgradeSignal = false
+  //entity.votes = new Array<string>()
+  //entity.upgradeSignal = false
   entity.totalCommissionReceived = Utils.ZERO_DEC
   entity.save()
 
@@ -395,8 +395,8 @@ export function handleBurnDeadman(event: BurnDeadmanEvent): void {
   manager.kairoBalanceWithStake = manager.kairoBalance
   manager.riskTaken = Utils.ZERO_DEC
   manager.riskThreshold = manager.baseStake.times(Utils.RISK_THRESHOLD_TIME)
-  manager.upgradeSignal = false;
-  manager.votes = new Array<string>();
+  //manager.upgradeSignal = false;
+  //manager.votes = new Array<string>();
   manager.save()
 }
 

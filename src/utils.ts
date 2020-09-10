@@ -35,7 +35,7 @@ export let ETH_ADDR = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
 export let ZERO_ADDR = '0x0000000000000000000000000000000000000000'
 export let RECORD_INTERVAL = BigInt.fromI32(24 * 60 * 60 / 15) // 24 hours if avg block time is 15 seconds
 export let PRICE_INTERVAL = BigInt.fromI32(5 * 60 / 15) // 5 minutes if avg block time is 15 seconds
-export let LATEST_BLOCK = BigInt.fromI32(6986000 + 100)
+export let LATEST_BLOCK = BigInt.fromI32(7009000 + 100)
 
 export let PEAK_DECIMALS = 8
 
