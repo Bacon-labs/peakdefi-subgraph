@@ -517,7 +517,7 @@ export function handleBlock(block: ethereum.Block): void {
           let totalStakeInvestmentValue = Utils.ZERO_DEC // the total value of staked tokens, denoted in RepToken
 
           // update reptoken balances
-          manager.reptokenBalance = Utils.normalize(reptoken.balanceOf(Address.fromString(manager.id)))
+          manager.reptokenBalance = Utils.normalize(reptoken.balanceOf(Address.fromString(manager.address)))
           manager.save()
 
           // basic orders
