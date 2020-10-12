@@ -19,8 +19,8 @@ type Manager @entity {
   id: ID! # address
   fund: Fund!
   address: String!
-  kairoBalance: BigDecimal!
-  kairoBalanceWithStake: BigDecimal!
+  reptokenBalance: BigDecimal!
+  reptokenBalanceWithStake: BigDecimal!
   baseStake: BigDecimal!
   riskTaken: BigDecimal!
   riskThreshold: BigDecimal!
@@ -59,7 +59,7 @@ type CompoundOrder @entity {
   tokenAddress: String!
   cycleNumber: BigInt!
   stake: BigDecimal!
-  collateralAmountInDAI: BigDecimal!
+  collateralAmountInUSDC: BigDecimal!
   collateralRatio: BigDecimal!
   currProfit: BigDecimal!
   currCollateral: BigDecimal!
@@ -82,7 +82,7 @@ type CommissionRedemption @entity {
   fund: Fund!
   timestamp: BigInt!
   cycleNumber: BigInt!
-  amountInDAI: BigDecimal!
+  amountInUSDC: BigDecimal!
   txHash: String!
 }
 
@@ -99,21 +99,21 @@ type DepositWithdraw @entity {
   fund: Fund!
   timestamp: BigInt!
   isDeposit: Boolean!
-  amountInDAI: BigDecimal!
+  amountInUSDC: BigDecimal!
   txHash: String!
 }
 
 type Fund @entity {
-  id: ID! # address of BetokenProxy
+  id: ID! # address of PeakDeFiProxy
   address: String!
   cycleNumber: BigInt!
   cyclePhase: CyclePhase!
   startTimeOfCyclePhase: BigInt!
   phaseLengths: [BigInt!]!
-  totalFundsInDAI: BigDecimal!
+  totalFundsInUSDC: BigDecimal!
   totalFundsAtPhaseStart: BigDecimal!
-  kairoPrice: BigDecimal!
-  kairoTotalSupply: BigDecimal!
+  reptokenPrice: BigDecimal!
+  reptokenTotalSupply: BigDecimal!
   sharesPrice: BigDecimal!
   sharesTotalSupply: BigDecimal!
   sharesPriceHistory: [DataPoint!]!
@@ -147,14 +147,14 @@ type ManagerROI @entity {
   manager: String!
   cycle: BigInt!
   roi: BigDecimal!
-  kairoBalance: BigDecimal!
+  reptokenBalance: BigDecimal!
 }
 
 type TokenPrice @entity {
   id: ID!
   tokenSymbol: String!
   tokenAddress: String!
-  priceInDAI: BigDecimal!
+  priceInUSDC: BigDecimal!
   timestamp: BigInt!
 }
 
@@ -172,11 +172,11 @@ type PeakUser @entity {
   referrer: PeakUser
   rank: BigInt!
   careerValue: BigDecimal!
-  totalDaiCommissionReceived: BigDecimal!
+  totalUSDCCommissionReceived: BigDecimal!
   totalPeakCommissionReceived: BigDecimal!
   referredUsers: [PeakUser!]! @derivedFrom(field: "referrer")
   referLevelUserCounts: [BigInt!]!
-  referLevelDaiCommissions: [BigDecimal!]!
+  referLevelUSDCCommissions: [BigDecimal!]!
   referLevelPeakCommissions: [BigDecimal!]!
   stakeAmount: BigDecimal!
   totalStakeReward: BigDecimal!

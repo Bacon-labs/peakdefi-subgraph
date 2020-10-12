@@ -1,21 +1,8 @@
 [
   {
-    "constant": true,
-    "inputs": [],
-    "name": "betokenFundAddress",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
+        "internalType": "address payable",
         "name": "_fundAddr",
         "type": "address"
       }
@@ -29,6 +16,7 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "address payable",
         "name": "_newFundAddr",
         "type": "address"
       }
@@ -37,9 +25,24 @@
     "type": "event"
   },
   {
+    "constant": true,
+    "inputs": [],
+    "name": "peakdefiFundAddress",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [],
-    "name": "updateBetokenFundAddress",
+    "name": "updatePeakDeFiFundAddress",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",

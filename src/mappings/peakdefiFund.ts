@@ -9,15 +9,15 @@ import {
   CommissionPaid as CommissionPaidEvent,
   TotalCommissionPaid as TotalCommissionPaidEvent,
   Register as RegisterEvent,
-  SignaledUpgrade as SignaledUpgradeEvent,
+  // SignaledUpgrade as SignaledUpgradeEvent,
   DeveloperInitiatedUpgrade as DeveloperInitiatedUpgradeEvent,
-  InitiatedUpgrade as InitiatedUpgradeEvent,
-  ProposedCandidate as ProposedCandidateEvent,
-  Voted as VotedEvent,
+  // InitiatedUpgrade as InitiatedUpgradeEvent,
+  // ProposedCandidate as ProposedCandidateEvent,
+  // Voted as VotedEvent,
   FinalizedNextVersion as FinalizedNextVersionEvent,
   BurnDeadman as BurnDeadmanEvent,
-  BetokenFund,
-} from "../../generated/templates/BetokenFund/BetokenFund"
+  PeakDeFiFund,
+} from "../../generated/templates/PeakDeFiFund/PeakDeFiFund"
 
 import {
   Manager,
@@ -32,7 +32,7 @@ import {
   TokenPrice
 } from "../../generated/schema"
 
-import { CompoundOrder as CompoundOrderContract } from '../../generated/templates/BetokenFund/CompoundOrder'
+import { CompoundOrder as CompoundOrderContract } from '../../generated/templates/PeakDeFiFund/CompoundOrder'
 import { MiniMeToken } from '../../generated/templates/MiniMeToken/MiniMeToken'
 
 import { BigInt, Address, BigDecimal, log, ethereum, dataSource } from '@graphprotocol/graph-ts'
@@ -47,17 +47,17 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context);
-  let fund = BetokenFund.bind(event.address)
-  let kairo = MiniMeToken.bind(fund.controlTokenAddr())
+  let fund = PeakDeFiFund.bind(event.address)
+  let reptoken = MiniMeToken.bind(fund.controlTokenAddr())
 
   Utils.updateTotalFunds(context)
-  entity.totalFundsInDAI = Utils.normalize(event.params._totalFundsInDAI)
+  entity.totalFundsInUSDC = Utils.normalize(event.params._totalFundsInUSDC)
 
   // record cycle ROI
   let shouldRecordROI = event.params._newPhase.equals(Utils.ZERO_INT) && !event.params._cycleNumber.equals(BigInt.fromI32(1)) && event.params._cycleNumber.equals(BigInt.fromI32(entity.cycleROIHistory.length + 2))
   if (shouldRecordROI) {
-    let currentTotalFundsInDAI = entity.totalFundsInDAI
-    let cycleROI = currentTotalFundsInDAI.minus(entity.totalFundsAtPhaseStart).div(entity.totalFundsAtPhaseStart)
+    let currentTotalFundsInUSDC = entity.totalFundsInUSDC
+    let cycleROI = currentTotalFundsInUSDC.minus(entity.totalFundsAtPhaseStart).div(entity.totalFundsAtPhaseStart)
     let cycleROIHistory = entity.cycleROIHistory
     cycleROIHistory.push(cycleROI)
     entity.cycleROIHistory = cycleROIHistory
@@ -73,13 +73,13 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
   entity.upgradeVotingActive = fund.upgradeVotingActive()
   entity.upgradeSignalStrength = Utils.normalize(fund.upgradeSignalStrength(entity.cycleNumber))*/
   entity.nextVersion = fund.nextVersion().toHex()
-  entity.totalFundsAtPhaseStart = entity.totalFundsInDAI
+  entity.totalFundsAtPhaseStart = entity.totalFundsInUSDC
   entity.save()
 
   let caller = event.transaction.from.toHex()
   for (let m: i32 = 0; m < entity.managers.length; m++) {
     let manager = Manager.load(Utils.getArrItem<string>(entity.managers, m))
-    manager.kairoBalance = Utils.normalize(kairo.balanceOf(Address.fromString(manager.id)))
+    manager.reptokenBalance = Utils.normalize(reptoken.balanceOf(Address.fromString(manager.address)))
 
     // record manager ROI
     if (shouldRecordROI) {
@@ -88,16 +88,16 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
       roi.fund = Utils.getFundID(context)
       roi.cycle = entity.cycleNumber.minus(BigInt.fromI32(1))
       let callReward = manager.id === caller ? Utils.CALLER_REWARD : Utils.ZERO_DEC;
-      roi.roi = manager.baseStake.equals(Utils.ZERO_DEC) ? Utils.ZERO_DEC : manager.kairoBalance.minus(callReward).div(manager.baseStake).minus(BigDecimal.fromString('1')).times(BigDecimal.fromString('100'))
-      roi.kairoBalance = manager.kairoBalance
+      roi.roi = manager.baseStake.equals(Utils.ZERO_DEC) ? Utils.ZERO_DEC : manager.reptokenBalance.minus(callReward).div(manager.baseStake).minus(BigDecimal.fromString('1')).times(BigDecimal.fromString('100'))
+      roi.reptokenBalance = manager.reptokenBalance
       roi.save()
       let roiHistory = manager.roiHistory
       roiHistory.push(roi.id)
       manager.roiHistory = roiHistory
     }
 
-    manager.baseStake = manager.kairoBalance
-    manager.kairoBalanceWithStake = manager.kairoBalance
+    manager.baseStake = manager.reptokenBalance
+    manager.reptokenBalanceWithStake = manager.reptokenBalance
     manager.riskTaken = Utils.ZERO_DEC
     manager.riskThreshold = manager.baseStake.times(Utils.RISK_THRESHOLD_TIME)
     //manager.upgradeSignal = false;
@@ -109,7 +109,7 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
 export function handleDeposit(event: DepositEvent): void {
   handleBlock(event.block)
   let context = dataSource.context()
-  let fund = BetokenFund.bind(event.address)
+  let fund = PeakDeFiFund.bind(event.address)
   let shares = MiniMeToken.bind(fund.shareTokenAddr())
 
   let investor = Investor.load(Utils.getFundID(context) + '-' + event.params._sender.toHex())
@@ -126,7 +126,7 @@ export function handleDeposit(event: DepositEvent): void {
     Utils.getFundID(context) + '-' + event.transaction.hash.toHex() + "-" + event.logIndex.toString()
   )
   entity.fund = Utils.getFundID(context)
-  entity.amountInDAI = Utils.normalize(event.params._daiAmount)
+  entity.amountInUSDC = Utils.normalize(event.params._usdcAmount)
   entity.timestamp = event.params._timestamp
   entity.isDeposit = true
   entity.txHash = event.transaction.hash.toHex()
@@ -145,7 +145,7 @@ export function handleDeposit(event: DepositEvent): void {
 export function handleWithdraw(event: WithdrawEvent): void {
   handleBlock(event.block)
   let context = dataSource.context()
-  let fund = BetokenFund.bind(event.address)
+  let fund = PeakDeFiFund.bind(event.address)
   let shares = MiniMeToken.bind(fund.shareTokenAddr())
 
   let investor = Investor.load(Utils.getFundID(context) + '-' + event.params._sender.toHex())
@@ -159,7 +159,7 @@ export function handleWithdraw(event: WithdrawEvent): void {
     Utils.getFundID(context) + '-' + event.transaction.hash.toHex() + "-" + event.logIndex.toString()
   )
   entity.fund = Utils.getFundID(context)
-  entity.amountInDAI = Utils.normalize(event.params._daiAmount)
+  entity.amountInUSDC = Utils.normalize(event.params._usdcAmount)
   entity.timestamp = event.params._timestamp
   entity.isDeposit = false
   entity.txHash = event.transaction.hash.toHex()
@@ -207,13 +207,13 @@ export function handleCreatedInvestment(event: CreatedInvestmentEvent): void {
   let orders = manager.basicOrders
   orders.push(id)
   manager.basicOrders = orders
-  let fundContract = BetokenFund.bind(event.address)
-  let kairo = MiniMeToken.bind(fundContract.controlTokenAddr())
-  manager.kairoBalance = Utils.normalize(kairo.balanceOf(event.params._sender))
+  let fundContract = PeakDeFiFund.bind(event.address)
+  let reptoken = MiniMeToken.bind(fundContract.controlTokenAddr())
+  manager.reptokenBalance = Utils.normalize(reptoken.balanceOf(event.params._sender))
   manager.save()
 
   let fund = Utils.getFundEntity(context)
-  fund.kairoTotalSupply = Utils.normalize(kairo.totalSupply())
+  fund.reptokenTotalSupply = Utils.normalize(reptoken.totalSupply())
   fund.save()
 }
 
@@ -221,7 +221,7 @@ export function handleSoldInvestment(event: SoldInvestmentEvent): void {
   handleBlock(event.block)
   let context = dataSource.context()
 
-  let fund = BetokenFund.bind(event.address)
+  let fund = PeakDeFiFund.bind(event.address)
   let investmentObj = fund.userInvestments(event.params._sender, event.params._id)
   let tokenDecimals = Utils.getTokenDecimals(event.params._tokenAddress)
   let id = Utils.getFundID(context) + '-' + event.params._sender.toHex() + '-' + event.params._cycleNumber.toString() + '-' + event.params._id.toString()
@@ -237,12 +237,12 @@ export function handleSoldInvestment(event: SoldInvestmentEvent): void {
   Utils.updateTotalFunds(context)
 
   let manager = Manager.load(Utils.getFundID(context) + '-' + event.params._sender.toHex())
-  let kairo = MiniMeToken.bind(fund.controlTokenAddr())
-  manager.kairoBalance = Utils.normalize(kairo.balanceOf(event.params._sender))
+  let reptoken = MiniMeToken.bind(fund.controlTokenAddr())
+  manager.reptokenBalance = Utils.normalize(reptoken.balanceOf(event.params._sender))
   manager.save()
 
   let fundEntity = Utils.getFundEntity(context)
-  fundEntity.kairoTotalSupply = Utils.normalize(kairo.totalSupply())
+  fundEntity.reptokenTotalSupply = Utils.normalize(reptoken.totalSupply())
   fundEntity.save()
 }
 
@@ -260,7 +260,7 @@ export function handleCreatedCompoundOrder(
   entity.cycleNumber = event.params._cycleNumber
   entity.tokenAddress = event.params._tokenAddress.toHex()
   entity.stake = Utils.normalize(event.params._stakeInWeis)
-  entity.collateralAmountInDAI = Utils.normalize(event.params._costDAIAmount)
+  entity.collateralAmountInUSDC = Utils.normalize(event.params._costUSDCAmount)
   entity.buyTokenPrice = Utils.getPriceOfToken(event.params._tokenAddress, Utils.ZERO_INT)
   entity.buyTime = event.block.timestamp
   entity.sellTime = Utils.ZERO_INT
@@ -272,25 +272,25 @@ export function handleCreatedCompoundOrder(
 
   let contract = CompoundOrderContract.bind(event.params._order)
   entity.marketCollateralFactor = Utils.normalize(contract.getMarketCollateralFactor())
-  entity.collateralRatio = Utils.normalize(contract.getCurrentCollateralRatioInDAI())
-  let currProfitObj = contract.getCurrentProfitInDAI() // value0: isNegative, value1: value
+  entity.collateralRatio = Utils.normalize(contract.getCurrentCollateralRatioInUSDC())
+  let currProfitObj = contract.getCurrentProfitInUSDC() // value0: isNegative, value1: value
   entity.currProfit = Utils.normalize(currProfitObj.value1.times(currProfitObj.value0 ? BigInt.fromI32(-1) : BigInt.fromI32(1)))
-  entity.currCollateral = Utils.normalize(contract.getCurrentCollateralInDAI())
-  entity.currBorrow = Utils.normalize(contract.getCurrentBorrowInDAI())
-  entity.currCash = Utils.normalize(contract.getCurrentCashInDAI())
+  entity.currCollateral = Utils.normalize(contract.getCurrentCollateralInUSDC())
+  entity.currBorrow = Utils.normalize(contract.getCurrentBorrowInUSDC())
+  entity.currCash = Utils.normalize(contract.getCurrentCashInUSDC())
   entity.save()
 
   let manager = Manager.load(Utils.getFundID(context) + '-' + event.params._sender.toHex())
   let orders = manager.compoundOrders
   orders.push(entity.id)
   manager.compoundOrders = orders
-  let fund = BetokenFund.bind(event.address)
-  let kairo = MiniMeToken.bind(fund.controlTokenAddr())
-  manager.kairoBalance = Utils.normalize(kairo.balanceOf(event.params._sender))
+  let fund = PeakDeFiFund.bind(event.address)
+  let reptoken = MiniMeToken.bind(fund.controlTokenAddr())
+  manager.reptokenBalance = Utils.normalize(reptoken.balanceOf(event.params._sender))
   manager.save()
 
   let fundEntity = Utils.getFundEntity(context)
-  fundEntity.kairoTotalSupply = Utils.normalize(kairo.totalSupply())
+  fundEntity.reptokenTotalSupply = Utils.normalize(reptoken.totalSupply())
   fundEntity.save()
 }
 
@@ -302,19 +302,19 @@ export function handleSoldCompoundOrder(event: SoldCompoundOrderEvent): void {
   let entity = CompoundOrder.load(id)
   entity.isSold = true
   entity.sellTime = event.block.timestamp
-  entity.outputAmount = Utils.normalize(event.params._earnedDAIAmount)
+  entity.outputAmount = Utils.normalize(event.params._earnedUSDCAmount)
   entity.save()
 
   Utils.updateTotalFunds(context)
 
   let manager = Manager.load(Utils.getFundID(context) + '-' + event.params._sender.toHex())
-  let fund = BetokenFund.bind(event.address)
-  let kairo = MiniMeToken.bind(fund.controlTokenAddr())
-  manager.kairoBalance = Utils.normalize(kairo.balanceOf(event.params._sender))
+  let fund = PeakDeFiFund.bind(event.address)
+  let reptoken = MiniMeToken.bind(fund.controlTokenAddr())
+  manager.reptokenBalance = Utils.normalize(reptoken.balanceOf(event.params._sender))
   manager.save()
   
   let fundEntity = Utils.getFundEntity(context)
-  fundEntity.kairoTotalSupply = Utils.normalize(kairo.totalSupply())
+  fundEntity.reptokenTotalSupply = Utils.normalize(reptoken.totalSupply())
   fundEntity.save()
 }
 
@@ -328,7 +328,7 @@ export function handleCommissionPaid(event: CommissionPaidEvent): void {
   entity.fund = Utils.getFundID(context)
   entity.timestamp = event.block.timestamp
   entity.cycleNumber = event.params._cycleNumber
-  entity.amountInDAI = Utils.normalize(event.params._commission)
+  entity.amountInUSDC = Utils.normalize(event.params._commission)
   entity.txHash = event.transaction.hash.toHex()
   entity.save()
 
@@ -337,7 +337,7 @@ export function handleCommissionPaid(event: CommissionPaidEvent): void {
   history.push(entity.id)
   manager.commissionHistory = history
   manager.lastCommissionRedemption = entity.cycleNumber
-  manager.totalCommissionReceived = manager.totalCommissionReceived.plus(entity.amountInDAI)
+  manager.totalCommissionReceived = manager.totalCommissionReceived.plus(entity.amountInUSDC)
   manager.save()
 }
 
@@ -346,7 +346,7 @@ export function handleTotalCommissionPaid(event: TotalCommissionPaidEvent): void
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
-  entity.cycleTotalCommission = Utils.normalize(event.params._totalCommissionInDAI)
+  entity.cycleTotalCommission = Utils.normalize(event.params._totalCommissionInUSDC)
   entity.save()
 }
 
@@ -357,9 +357,9 @@ export function handleRegister(event: RegisterEvent): void {
   let entity = new Manager(Utils.getFundID(context) + '-' + event.params._manager.toHex())
   entity.fund = Utils.getFundID(context)
   entity.address = event.params._manager.toHex()
-  entity.kairoBalance = Utils.normalize(event.params._kairoReceived)
-  entity.kairoBalanceWithStake = entity.kairoBalance
-  entity.baseStake = entity.kairoBalance
+  entity.reptokenBalance = Utils.normalize(event.params._reptokenReceived)
+  entity.reptokenBalanceWithStake = entity.reptokenBalance
+  entity.baseStake = entity.reptokenBalance
   entity.riskTaken = Utils.ZERO_DEC
   entity.riskThreshold = entity.baseStake.times(Utils.RISK_THRESHOLD_TIME)
   entity.lastCommissionRedemption = Utils.ZERO_INT
@@ -378,9 +378,9 @@ export function handleRegister(event: RegisterEvent): void {
   let managers = fund.managers
   managers.push(entity.id)
   fund.managers = managers
-  let fundContract = BetokenFund.bind(event.address)
-  let kairo = MiniMeToken.bind(fundContract.controlTokenAddr())
-  fund.kairoTotalSupply = Utils.normalize(kairo.totalSupply())
+  let fundContract = PeakDeFiFund.bind(event.address)
+  let reptoken = MiniMeToken.bind(fundContract.controlTokenAddr())
+  fund.reptokenTotalSupply = Utils.normalize(reptoken.totalSupply())
   fund.save()
 }
 
@@ -390,9 +390,9 @@ export function handleBurnDeadman(event: BurnDeadmanEvent): void {
 
   let managerAddr = event.params._manager
   let manager = Manager.load(Utils.getFundID(context) + '-' + managerAddr.toHex());
-  manager.kairoBalance = Utils.ZERO_DEC
-  manager.baseStake = manager.kairoBalance
-  manager.kairoBalanceWithStake = manager.kairoBalance
+  manager.reptokenBalance = Utils.ZERO_DEC
+  manager.baseStake = manager.reptokenBalance
+  manager.reptokenBalanceWithStake = manager.reptokenBalance
   manager.riskTaken = Utils.ZERO_DEC
   manager.riskThreshold = manager.baseStake.times(Utils.RISK_THRESHOLD_TIME)
   //manager.upgradeSignal = false;
@@ -409,7 +409,7 @@ export function handleBurnDeadman(event: BurnDeadmanEvent): void {
   manager.save()
 
   let entity = Utils.getFundEntity(context)
-  let fund = BetokenFund.bind(event.address)
+  let fund = PeakDeFiFund.bind(event.address)
   entity.upgradeSignalStrength = Utils.normalize(fund.upgradeSignalStrength(entity.cycleNumber))
   entity.save()
 }*/
@@ -440,7 +440,7 @@ export function handleProposedCandidate(event: ProposedCandidateEvent): void {
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
-  let fund = BetokenFund.bind(event.address)
+  let fund = PeakDeFiFund.bind(event.address)
   let candidates = new Array<string>()
   let proposers = new Array<string>()
   for (let i = 0; i < 5; i++) {
@@ -457,7 +457,7 @@ export function handleVoted(event: VotedEvent): void {
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
-  let fund = BetokenFund.bind(event.address)
+  let fund = PeakDeFiFund.bind(event.address)
   let forVotes = new Array<BigDecimal>()
   let againstVotes = new Array<BigDecimal>()
   for (let i = 0; i < 5; i++) {
@@ -503,21 +503,21 @@ export function handleBlock(block: ethereum.Block): void {
     if ((block.number.ge(Utils.LATEST_BLOCK) && block.number.mod(Utils.PRICE_INTERVAL).isZero()) || (block.number.lt(Utils.LATEST_BLOCK) && block.number.mod(Utils.RECORD_INTERVAL).isZero())) {
       log.info("Updating price for block: {}", [block.number.toString()])
 
-      let fundContract = BetokenFund.bind(Address.fromString(fund.address))
-      let kairo = MiniMeToken.bind(fundContract.controlTokenAddr())
-      fund.kairoTotalSupply = Utils.normalize(kairo.totalSupply())
+      let fundContract = PeakDeFiFund.bind(Address.fromString(fund.address))
+      let reptoken = MiniMeToken.bind(fundContract.controlTokenAddr())
+      fund.reptokenTotalSupply = Utils.normalize(reptoken.totalSupply())
       fund.save()
 
-      let tentativeTotalInvestmentValueInKairo = Utils.ZERO_DEC
+      let tentativeTotalInvestmentValueInRepToken = Utils.ZERO_DEC
       if (fund.cycleNumber.gt(Utils.ZERO_INT) && fund.cyclePhase.includes(Utils.CyclePhase[1])) {
         for (let m = 0; m < fund.managers.length; m++) {
           let manager = Manager.load(Utils.getArrItem<string>(fund.managers, m))
           let riskTaken = Utils.ZERO_DEC
-          let totalStakeKairoValue = Utils.ZERO_DEC // total staked Kairo value modified by Utils.toKairoROI
-          let totalStakeInvestmentValue = Utils.ZERO_DEC // the total value of staked tokens, denoted in Kairo
+          let totalStakeRepTokenValue = Utils.ZERO_DEC // total staked RepToken value modified by Utils.toRepTokenROI
+          let totalStakeInvestmentValue = Utils.ZERO_DEC // the total value of staked tokens, denoted in RepToken
 
-          // update kairo balances
-          manager.kairoBalance = Utils.normalize(kairo.balanceOf(Address.fromString(manager.id)))
+          // update reptoken balances
+          manager.reptokenBalance = Utils.normalize(reptoken.balanceOf(Address.fromString(manager.id)))
           manager.save()
 
           // basic orders
@@ -531,12 +531,12 @@ export function handleBlock(block: ethereum.Block): void {
                 // record stake value
                 if (order.buyPrice.equals(Utils.ZERO_DEC)) {
                   totalStakeInvestmentValue = totalStakeInvestmentValue.plus(order.stake)
-                  totalStakeKairoValue = totalStakeKairoValue.plus(order.stake)
+                  totalStakeRepTokenValue = totalStakeRepTokenValue.plus(order.stake)
                 } else {
                   let investmentROI = order.sellPrice.minus(order.buyPrice).div(order.buyPrice)
-                  let kairoROI = Utils.toKairoROI(investmentROI)
+                  let reptokenROI = Utils.toRepTokenROI(investmentROI)
                   totalStakeInvestmentValue = totalStakeInvestmentValue.plus(order.stake.times(investmentROI.plus(Utils.ONE_DEC)))
-                  totalStakeKairoValue = totalStakeKairoValue.plus(order.stake.times(kairoROI.plus(Utils.ONE_DEC)))
+                  totalStakeRepTokenValue = totalStakeRepTokenValue.plus(order.stake.times(reptokenROI.plus(Utils.ONE_DEC)))
                 }
               }
               // record risk
@@ -566,25 +566,25 @@ export function handleBlock(block: ethereum.Block): void {
             }
 
             if (order.cycleNumber.equals(fund.cycleNumber) && !order.isSold) {
-              order.collateralRatio = Utils.normalize(contract.getCurrentCollateralRatioInDAI())
+              order.collateralRatio = Utils.normalize(contract.getCurrentCollateralRatioInUSDC())
 
-              let currProfitObj = contract.getCurrentProfitInDAI() // value0: isNegative, value1: value
+              let currProfitObj = contract.getCurrentProfitInUSDC() // value0: isNegative, value1: value
               order.currProfit = Utils.normalize(currProfitObj.value1.times(currProfitObj.value0 ? BigInt.fromI32(-1) : BigInt.fromI32(1)))
 
-              order.currCollateral = Utils.normalize(contract.getCurrentCollateralInDAI())
-              order.currBorrow = Utils.normalize(contract.getCurrentBorrowInDAI())
-              order.currCash = Utils.normalize(contract.getCurrentCashInDAI())
+              order.currCollateral = Utils.normalize(contract.getCurrentCollateralInUSDC())
+              order.currBorrow = Utils.normalize(contract.getCurrentBorrowInUSDC())
+              order.currCash = Utils.normalize(contract.getCurrentCashInUSDC())
               order.save()
 
               // record stake value
-              if (order.collateralAmountInDAI.equals(Utils.ZERO_DEC)) {
+              if (order.collateralAmountInUSDC.equals(Utils.ZERO_DEC)) {
                 totalStakeInvestmentValue = totalStakeInvestmentValue.plus(order.stake)
-                totalStakeKairoValue = totalStakeKairoValue.plus(order.stake)
+                totalStakeRepTokenValue = totalStakeRepTokenValue.plus(order.stake)
               } else {
-                let investmentROI = order.currProfit.div(order.collateralAmountInDAI)
-                let kairoROI = Utils.toKairoROI(investmentROI)
+                let investmentROI = order.currProfit.div(order.collateralAmountInUSDC)
+                let reptokenROI = Utils.toRepTokenROI(investmentROI)
                 totalStakeInvestmentValue = totalStakeInvestmentValue.plus(order.stake.times(investmentROI.plus(Utils.ONE_DEC)))
-                totalStakeKairoValue = totalStakeKairoValue.plus(order.stake.times(kairoROI.plus(Utils.ONE_DEC)))
+                totalStakeRepTokenValue = totalStakeRepTokenValue.plus(order.stake.times(reptokenROI.plus(Utils.ONE_DEC)))
               }
             }
 
@@ -604,19 +604,19 @@ export function handleBlock(block: ethereum.Block): void {
           manager.riskTaken = riskTaken
 
           // total stake value
-          manager.kairoBalanceWithStake = totalStakeKairoValue.plus(manager.kairoBalance)
+          manager.reptokenBalanceWithStake = totalStakeRepTokenValue.plus(manager.reptokenBalance)
 
           manager.save()
 
-          tentativeTotalInvestmentValueInKairo = tentativeTotalInvestmentValueInKairo.plus(manager.kairoBalance).plus(totalStakeInvestmentValue)
+          tentativeTotalInvestmentValueInRepToken = tentativeTotalInvestmentValueInRepToken.plus(manager.reptokenBalance).plus(totalStakeInvestmentValue)
         }
       } else {
-        tentativeTotalInvestmentValueInKairo = fund.kairoTotalSupply
+        tentativeTotalInvestmentValueInRepToken = fund.reptokenTotalSupply
       }
 
       // record AUM
-      fund.aum = fund.totalFundsInDAI.times(tentativeTotalInvestmentValueInKairo).div(fund.kairoTotalSupply)
-      // record Betoken Shares price
+      fund.aum = fund.totalFundsInUSDC.times(tentativeTotalInvestmentValueInRepToken).div(fund.reptokenTotalSupply)
+      // record PeakDeFi Shares price
       if (fund.sharesTotalSupply.equals(Utils.ZERO_DEC)) {
         fund.sharesPrice = Utils.ONE_DEC
       } else {
@@ -650,7 +650,7 @@ export function handleBlock(block: ethereum.Block): void {
         let tokenPrice = new TokenPrice(token.address + '-' + block.timestamp.toString())
         tokenPrice.tokenAddress = token.address
         tokenPrice.tokenSymbol = token.symbol
-        tokenPrice.priceInDAI = Utils.getPriceOfToken(Address.fromString(token.address), Utils.ZERO_INT)
+        tokenPrice.priceInUSDC = Utils.getPriceOfToken(Address.fromString(token.address), Utils.ZERO_INT)
         tokenPrice.timestamp = block.timestamp
         tokenPrice.save()
       }

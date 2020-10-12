@@ -1,5 +1,5 @@
 {
-  "name": "betoken",
+  "name": "peakdefi",
   "license": "GNU GPL V3",
   "scripts": {
     "codegen": "graph codegen",

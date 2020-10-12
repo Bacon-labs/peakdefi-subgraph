@@ -30,7 +30,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "collateralAmountInDAI",
+    "name": "collateralAmountInUSDC",
     "outputs": [
       {
         "name": "",
@@ -100,7 +100,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "loanAmountInDAI",
+    "name": "loanAmountInUSDC",
     "outputs": [
       {
         "name": "",
@@ -151,7 +151,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "CDAI",
+    "name": "CUSDC",
     "outputs": [
       {
         "name": "",
@@ -249,7 +249,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "DAI_ADDR",
+    "name": "USDC_ADDR",
     "outputs": [
       {
         "name": "",
@@ -303,11 +303,11 @@
         "type": "uint256"
       },
       {
-        "name": "_collateralAmountInDAI",
+        "name": "_collateralAmountInUSDC",
         "type": "uint256"
       },
       {
-        "name": "_loanAmountInDAI",
+        "name": "_loanAmountInUSDC",
         "type": "uint256"
       },
       {
@@ -319,7 +319,7 @@
         "type": "address"
       },
       {
-        "name": "_daiAddr",
+        "name": "_usdcAddr",
         "type": "address"
       },
       {
@@ -335,7 +335,7 @@
         "type": "address"
       },
       {
-        "name": "_cDAIAddr",
+        "name": "_cUSDCAddr",
         "type": "address"
       },
       {
@@ -413,7 +413,7 @@
     "constant": false,
     "inputs": [
       {
-        "name": "_repayAmountInDAI",
+        "name": "_repayAmountInUSDC",
         "type": "uint256"
       }
     ],
@@ -426,7 +426,7 @@
   {
     "constant": false,
     "inputs": [],
-    "name": "getCurrentLiquidityInDAI",
+    "name": "getCurrentLiquidityInUSDC",
     "outputs": [
       {
         "name": "_isNegative",
@@ -444,7 +444,7 @@
   {
     "constant": false,
     "inputs": [],
-    "name": "getCurrentCollateralRatioInDAI",
+    "name": "getCurrentCollateralRatioInUSDC",
     "outputs": [
       {
         "name": "_amount",
@@ -458,7 +458,7 @@
   {
     "constant": false,
     "inputs": [],
-    "name": "getCurrentProfitInDAI",
+    "name": "getCurrentProfitInUSDC",
     "outputs": [
       {
         "name": "_isNegative",
@@ -490,7 +490,7 @@
   {
     "constant": false,
     "inputs": [],
-    "name": "getCurrentCollateralInDAI",
+    "name": "getCurrentCollateralInUSDC",
     "outputs": [
       {
         "name": "_amount",
@@ -504,7 +504,7 @@
   {
     "constant": false,
     "inputs": [],
-    "name": "getCurrentBorrowInDAI",
+    "name": "getCurrentBorrowInUSDC",
     "outputs": [
       {
         "name": "_amount",
@@ -518,7 +518,7 @@
   {
     "constant": false,
     "inputs": [],
-    "name": "getCurrentCashInDAI",
+    "name": "getCurrentCashInUSDC",
     "outputs": [
       {
         "name": "_amount",

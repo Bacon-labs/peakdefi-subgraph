@@ -2,6 +2,7 @@ import {
   CreateStake as CreateStakeEvent,
   WithdrawReward as WithdrawRewardEvent,
   WithdrawStake as WithdrawStakeEvent,
+  ReceiveStakeReward as ReceiveStakeRewardEvent,
   PeakStaking
 } from '../../generated/PeakStaking/PeakStaking'
 import {
@@ -37,7 +38,7 @@ function getUser(address: Address): PeakUser {
     entity.referrer = ''
     entity.rank = Utils.ZERO_INT
     entity.careerValue = Utils.ZERO_DEC
-    entity.totalDaiCommissionReceived = Utils.ZERO_DEC
+    entity.totalUSDCCommissionReceived = Utils.ZERO_DEC
     entity.totalPeakCommissionReceived = Utils.ZERO_DEC
     let newArray = new Array<BigInt>(8)
     for (let i = 0; i < 8; i++) {
@@ -48,7 +49,7 @@ function getUser(address: Address): PeakUser {
     for (let i = 0; i < 8; i++) {
       newDecArray[i] = Utils.ZERO_DEC
     }
-    entity.referLevelDaiCommissions = newDecArray
+    entity.referLevelUSDCCommissions = newDecArray
     entity.referLevelPeakCommissions = newDecArray
     entity.stakeAmount = Utils.ZERO_DEC
     entity.totalStakeReward = Utils.ZERO_DEC
@@ -125,6 +126,30 @@ export function handleWithdrawReward(event: WithdrawRewardEvent): void {
   // update stake entry
   entry.withdrawnInterestAmount = entry.withdrawnInterestAmount.plus(rewardAmount)
   entry.save()
+
+  // update user
+  user.totalWithdrawnStakeReward = user.totalWithdrawnStakeReward.plus(rewardAmount)
+  user.save()
+
+  // update pool
+  peakStakingPool.totalWithdrawnStakeReward = peakStakingPool.totalWithdrawnStakeReward.plus(rewardAmount)
+  peakStakingPool.save()
+
+  // add activity entry
+  let activity = new PeakActivity('PeakActivity' + '-' + user.id + '-' + event.transaction.hash.toHex() + '-' + event.transactionLogIndex.toString())
+  activity.user = user.id
+  activity.type = 'WithdrawReward'
+  activity.timestamp = event.block.timestamp
+  activity.txAmount = rewardAmount
+  activity.txHash = event.transaction.hash.toHex()
+  activity.save()
+}
+
+export function handleReceiveStakeReward(event: ReceiveStakeRewardEvent): void {
+  let peakStakingPool = getStakingPool(event.address)
+  let user = getUser(event.params.user)
+
+  let rewardAmount = Utils.normalize(event.params.rewardAmount, Utils.PEAK_DECIMALS)
 
   // update user
   user.totalWithdrawnStakeReward = user.totalWithdrawnStakeReward.plus(rewardAmount)

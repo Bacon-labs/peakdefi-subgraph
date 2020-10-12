@@ -3,12 +3,12 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: BetokenFactory
+    name: PeakDeFiFactory
     network: rinkeby
     source:
-      address: '0x83f3F5ADD91d16642F2B0b9dCCbBD7fAdB1E9Be9'
-      abi: BetokenFactory
-      startBlock: 6986000
+      address: '0xd67C1CA03B71556F02d9Aa9EfBE1424b56C7FC0C'
+      abi: PeakDeFiFactory
+      startBlock: 7160000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -17,21 +17,21 @@ dataSources:
         - Fund
         - FundRegistry
       abis:
-        - name: BetokenFactory
-          file: ./abis/BetokenFactory.json
-        - name: BetokenProxy
-          file: ./abis/BetokenProxy.json
+        - name: PeakDeFiFactory
+          file: ./abis/PeakDeFiFactory.json
+        - name: PeakDeFiProxy
+          file: ./abis/PeakDeFiProxy.json
       eventHandlers:
         - event: InitFund(address,address)
           handler: handleInitFund
-      file: ./src/mappings/betokenFactory.ts
+      file: ./src/mappings/peakdefiFactory.ts
   - kind: ethereum/contract
     name: PeakReward
     network: rinkeby
     source:
-      address: '0x0Ff97AdE2DF9d04D2c65ACFde69e56B5a9569Bb2'
+      address: '0x08b22f74Ac64985B4A99F2bd268b8ba024A61cF3'
       abi: PeakReward
-      startBlock: 6986000
+      startBlock: 7160000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -61,9 +61,9 @@ dataSources:
     name: PeakStaking
     network: rinkeby
     source:
-      address: '0x4Cade68b301AC84d94Ac54E332b796C0E9D70A90'
+      address: '0x1415825d0D257FdBE9C5311242905546afa95fF6'
       abi: PeakStaking
-      startBlock: 6986000
+      startBlock: 7160000
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -83,6 +83,8 @@ dataSources:
       eventHandlers:
         - event: CreateStake(uint256,address,address,uint256,uint256,uint256)
           handler: handleCreateStake
+        - event: ReceiveStakeReward(uint256,address,uint256)
+          handler: handleReceiveStakeReward
         - event: WithdrawReward(uint256,address,uint256)
           handler: handleWithdrawReward
         - event: WithdrawStake(uint256,address)
@@ -90,10 +92,10 @@ dataSources:
       file: ./src/mappings/peakStaking.ts
 templates:
   - kind: ethereum/contract
-    name: BetokenProxy
+    name: PeakDeFiProxy
     network: rinkeby
     source:
-      abi: BetokenProxy
+      abi: PeakDeFiProxy
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -102,26 +104,26 @@ templates:
         - Fund
         - Manager
       abis:
-        - name: BetokenProxy
-          file: ./abis/BetokenProxy.json
+        - name: PeakDeFiProxy
+          file: ./abis/PeakDeFiProxy.json
         - name: MiniMeToken
           file: ./abis/MiniMeToken.json
-        - name: BetokenFund
-          file: ./abis/BetokenFund.json
+        - name: PeakDeFiFund
+          file: ./abis/PeakDeFiFund.json
       eventHandlers:
         - event: UpdatedFundAddress(address)
           handler: handleUpdatedFundAddress
-      file: ./src/mappings/betokenProxy.ts
+      file: ./src/mappings/peakdefiProxy.ts
   - kind: ethereum/contract
-    name: BetokenFund
+    name: PeakDeFiFund
     network: rinkeby
     source:
-      abi: BetokenFund
+      abi: PeakDeFiFund
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
-      file: ./src/mappings/betokenFund.ts
+      file: ./src/mappings/peakdefiFund.ts
       entities:
         - Manager
         - BasicOrder
@@ -136,8 +138,8 @@ templates:
           file: ./abis/CompoundOrder.json
         - name: MiniMeToken
           file: ./abis/MiniMeToken.json
-        - name: BetokenFund
-          file: ./abis/BetokenFund.json
+        - name: PeakDeFiFund
+          file: ./abis/PeakDeFiFund.json
         - name: KyberNetwork
           file: ./abis/KyberNetwork.json
       #blockHandlers:
@@ -163,16 +165,8 @@ templates:
           handler: handleTotalCommissionPaid
         - event: Register(indexed address,uint256,uint256)
           handler: handleRegister
-        - event: SignaledUpgrade(indexed uint256,indexed address,indexed bool)
-          handler: handleSignaledUpgrade
         - event: DeveloperInitiatedUpgrade(indexed uint256,address)
           handler: handleDeveloperInitiatedUpgrade
-        - event: InitiatedUpgrade(indexed uint256)
-          handler: handleInitiatedUpgrade
-        - event: ProposedCandidate(indexed uint256,indexed uint256,indexed address,address)
-          handler: handleProposedCandidate
-        - event: Voted(indexed uint256,indexed uint256,indexed address,bool,uint256)
-          handler: handleVoted
         - event: FinalizedNextVersion(indexed uint256,address)
           handler: handleFinalizedNextVersion
         - event: BurnDeadman(indexed address,uint256)
@@ -193,8 +187,8 @@ templates:
       abis:
         - name: MiniMeToken
           file: ./abis/MiniMeToken.json
-        - name: BetokenFund
-          file: ./abis/BetokenFund.json
+        - name: PeakDeFiFund
+          file: ./abis/PeakDeFiFund.json
       eventHandlers:
         - event: Transfer(indexed address,indexed address,uint256)
           handler: handleTokenTransfer

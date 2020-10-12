@@ -1,15 +1,15 @@
 import {
-  BetokenFund
-} from "../../generated/templates/BetokenFund/BetokenFund"
+  PeakDeFiFund
+} from "../../generated/templates/PeakDeFiFund/PeakDeFiFund"
 import {
   UpdatedFundAddress as UpdatedFundAddressEvent
-} from "../../generated/templates/BetokenProxy/BetokenProxy"
+} from "../../generated/templates/PeakDeFiProxy/PeakDeFiProxy"
 import {
   Fund
 } from "../../generated/schema"
 import {
   MiniMeToken as MiniMeTokenTemplate,
-  BetokenFund as BetokenFundTemplate
+  PeakDeFiFund as PeakDeFiFundTemplate
 } from '../../generated/templates'
 import { MiniMeToken } from '../../generated/templates/MiniMeToken/MiniMeToken'
 import { BigDecimal, Address, BigInt, DataSourceContext } from '@graphprotocol/graph-ts'
@@ -24,21 +24,21 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
   let fund_entity = Fund.load(fundID)
   if (fund_entity == null) {
     fund_entity = new Fund(fundID)
-    let fund = BetokenFund.bind(event.params._newFundAddr)
-    let kairo = MiniMeToken.bind(fund.controlTokenAddr())
+    let fund = PeakDeFiFund.bind(event.params._newFundAddr)
+    let reptoken = MiniMeToken.bind(fund.controlTokenAddr())
     let shares = MiniMeToken.bind(fund.shareTokenAddr())
-    fund_entity.totalFundsInDAI = Utils.normalize(fund.totalFundsInDAI())
-    fund_entity.totalFundsAtPhaseStart = fund_entity.totalFundsInDAI
-    fund_entity.kairoPrice = Utils.normalize(fund.kairoPrice())
-    fund_entity.kairoTotalSupply = Utils.normalize(kairo.totalSupply())
+    fund_entity.totalFundsInUSDC = Utils.normalize(fund.totalFundsInUSDC())
+    fund_entity.totalFundsAtPhaseStart = fund_entity.totalFundsInUSDC
+    fund_entity.reptokenPrice = Utils.normalize(fund.reptokenPrice())
+    fund_entity.reptokenTotalSupply = Utils.normalize(reptoken.totalSupply())
     if (shares.totalSupply().equals(Utils.ZERO_INT)) {
       fund_entity.sharesPrice = BigDecimal.fromString('1')
     } else {
-      fund_entity.sharesPrice = fund_entity.totalFundsInDAI.div(Utils.normalize(shares.totalSupply()))
+      fund_entity.sharesPrice = fund_entity.totalFundsInUSDC.div(Utils.normalize(shares.totalSupply()))
     }
     fund_entity.sharesTotalSupply = Utils.normalize(shares.totalSupply())
     fund_entity.sharesPriceHistory = new Array<string>()
-    fund_entity.aum = fund_entity.totalFundsInDAI
+    fund_entity.aum = fund_entity.totalFundsInUSDC
     fund_entity.aumHistory = new Array<string>()
     fund_entity.cycleTotalCommission = Utils.ZERO_DEC
     fund_entity.managers = new Array<string>()
@@ -67,5 +67,5 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
 
   let context = new DataSourceContext()
   context.setString('ID', fundID)
-  BetokenFundTemplate.createWithContext(event.params._newFundAddr, context)
+  PeakDeFiFundTemplate.createWithContext(event.params._newFundAddr, context)
 }

@@ -19,7 +19,7 @@ function getUser(address: Address): PeakUser {
     entity.referrer = ''
     entity.rank = Utils.ZERO_INT
     entity.careerValue = Utils.ZERO_DEC
-    entity.totalDaiCommissionReceived = Utils.ZERO_DEC
+    entity.totalUSDCCommissionReceived = Utils.ZERO_DEC
     entity.totalPeakCommissionReceived = Utils.ZERO_DEC
     let newArray = new Array<BigInt>(8)
     for (let i = 0; i < 8; i++) {
@@ -30,7 +30,7 @@ function getUser(address: Address): PeakUser {
     for (let i = 0; i < 8; i++) {
       newDecArray[i] = Utils.ZERO_DEC
     }
-    entity.referLevelDaiCommissions = newDecArray
+    entity.referLevelUSDCCommissions = newDecArray
     entity.referLevelPeakCommissions = newDecArray
     entity.stakeAmount = Utils.ZERO_DEC
     entity.totalStakeReward = Utils.ZERO_DEC
@@ -92,11 +92,11 @@ export function handlePayCommission(event: PayCommissionEvent): void {
   activity.save()
 
   // update recipient
-  if (event.params.token.equals(Utils.DAI_ADDR)) {
-    recipient.totalDaiCommissionReceived = recipient.totalDaiCommissionReceived.plus(activity.txAmount)
-    let referLevelDaiCommissions = recipient.referLevelDaiCommissions
-    referLevelDaiCommissions[event.params.level] = referLevelDaiCommissions[event.params.level].plus(activity.txAmount)
-    recipient.referLevelDaiCommissions = referLevelDaiCommissions
+  if (event.params.token.equals(Utils.USDC_ADDR)) {
+    recipient.totalUSDCCommissionReceived = recipient.totalUSDCCommissionReceived.plus(activity.txAmount)
+    let referLevelUSDCCommissions = recipient.referLevelUSDCCommissions
+    referLevelUSDCCommissions[event.params.level] = referLevelUSDCCommissions[event.params.level].plus(activity.txAmount)
+    recipient.referLevelUSDCCommissions = referLevelUSDCCommissions
   } else {
     recipient.totalPeakCommissionReceived = recipient.totalPeakCommissionReceived.plus(activity.txAmount)
     let referLevelPeakCommissions = recipient.referLevelPeakCommissions

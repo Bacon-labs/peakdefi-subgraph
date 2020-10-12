@@ -1,14 +1,14 @@
 import { BigInt, Address, BigDecimal, ethereum, DataSourceContext } from '@graphprotocol/graph-ts'
 import {
-  BetokenFund,
-} from "../generated/templates/BetokenFund/BetokenFund"
+  PeakDeFiFund,
+} from "../generated/templates/PeakDeFiFund/PeakDeFiFund"
 
 import {
   Fund
 } from "../generated/schema"
 
-import { MiniMeToken } from '../generated/templates/BetokenFund/MiniMeToken'
-import { KyberNetwork } from "../generated/templates/BetokenFund/KyberNetwork"
+import { MiniMeToken } from '../generated/templates/PeakDeFiFund/MiniMeToken'
+import { KyberNetwork } from "../generated/templates/PeakDeFiFund/KyberNetwork"
 
 // Constants
 
@@ -28,7 +28,7 @@ export let ONE_DEC = BigDecimal.fromString('1')
 export let NEGONE_DEC = BigDecimal.fromString('-1')
 export let PRECISION = new BigDecimal(tenPow(18))
 export let KYBER_ADDR = Address.fromString("0x0d5371e5EE23dec7DF251A8957279629aa79E9C5")
-export let DAI_ADDR = Address.fromString("0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea")
+export let USDC_ADDR = Address.fromString("0x5592ec0cfb4dbc12d3ab100b257153436a1f0fea")
 export let CALLER_REWARD = BigDecimal.fromString('1')
 export let RISK_THRESHOLD_TIME = BigInt.fromI32(3 * 24 * 60 * 60).toBigDecimal()
 export let ETH_ADDR = "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
@@ -55,12 +55,12 @@ export function updateTotalFunds(context: DataSourceContext): void {
   let fundID = context.getString('ID')
   let fund = Fund.load(fundID)
   let fundAddress = Address.fromString(fund.address)
-  let fundContract = BetokenFund.bind(fundAddress)
-  let kairo = kairoContract(fundAddress)
+  let fundContract = PeakDeFiFund.bind(fundAddress)
+  let reptoken = reptokenContract(fundAddress)
   let shares = sharesContract(fundAddress)
-  fund.totalFundsInDAI = normalize(fundContract.totalFundsInDAI())
-  fund.kairoPrice = normalize(fundContract.kairoPrice())
-  fund.kairoTotalSupply = normalize(kairo.totalSupply())
+  fund.totalFundsInUSDC = normalize(fundContract.totalFundsInUSDC())
+  fund.reptokenPrice = normalize(fundContract.reptokenPrice())
+  fund.reptokenTotalSupply = normalize(reptoken.totalSupply())
   fund.sharesTotalSupply = normalize(shares.totalSupply())
   fund.save()
 }
@@ -73,13 +73,13 @@ export function tenPow(exponent: number): BigInt {
   return result
 }
 
-export function kairoContract(fundAddress: Address): MiniMeToken {
-  let fund = BetokenFund.bind(fundAddress)
+export function reptokenContract(fundAddress: Address): MiniMeToken {
+  let fund = PeakDeFiFund.bind(fundAddress)
   return MiniMeToken.bind(fund.controlTokenAddr())
 }
 
 export function sharesContract(fundAddress: Address): MiniMeToken {
-  let fund = BetokenFund.bind(fundAddress)
+  let fund = PeakDeFiFund.bind(fundAddress)
   return MiniMeToken.bind(fund.shareTokenAddr())
 }
 
@@ -104,13 +104,13 @@ export function getPriceOfToken(tokenAddress: Address, tokenAmount: BigInt): Big
   let kyber = KyberNetwork.bind(KYBER_ADDR)
   let decimals: i32 = getTokenDecimals(tokenAddress)
   if (tokenAmount.gt(ZERO_INT)) {
-    let result = kyber.try_getExpectedRate(tokenAddress, DAI_ADDR, tokenAmount)
+    let result = kyber.try_getExpectedRate(tokenAddress, USDC_ADDR, tokenAmount)
     if (result.reverted) {
       return ZERO_DEC
     }
     return normalize(result.value.value0)
   } else {
-    let result = kyber.try_getExpectedRate(tokenAddress, DAI_ADDR, tenPow(decimals))
+    let result = kyber.try_getExpectedRate(tokenAddress, USDC_ADDR, tenPow(decimals))
     if (result.reverted) {
       return ZERO_DEC
     }
@@ -122,7 +122,7 @@ export function normalize(i: BigInt, decimals: number = 18): BigDecimal {
   return i.toBigDecimal().div(tenPow(decimals).toBigDecimal())
 }
 
-export function toKairoROI(investmentROI: BigDecimal): BigDecimal {
+export function toRepTokenROI(investmentROI: BigDecimal): BigDecimal {
   // don't change anything for v1
   let punishmentThreshold = BigDecimal.fromString('-0.1')
   let burnThreshold = BigDecimal.fromString('-0.25')

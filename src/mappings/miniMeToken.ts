@@ -1,6 +1,6 @@
 import { Transfer as TransferEvent } from "../../generated/templates/MiniMeToken/MiniMeToken"
 import { MiniMeToken } from '../../generated/templates/MiniMeToken/MiniMeToken'
-import { BetokenFund } from '../../generated/templates/BetokenFund/BetokenFund'
+import { PeakDeFiFund } from '../../generated/templates/PeakDeFiFund/PeakDeFiFund'
 import { Investor } from "../../generated/schema"
 import * as Utils from '../utils'
 
@@ -8,7 +8,7 @@ import * as Utils from '../utils'
 
 export function handleTokenTransfer(event: TransferEvent): void {
   let contract = MiniMeToken.bind(event.address)
-  let fundContract = BetokenFund.bind(contract.owner())
+  let fundContract = PeakDeFiFund.bind(contract.owner())
   let fundID = fundContract.proxyAddr().toHex()
   if (contract.symbol().includes("BTKS")) {
     let to = event.params._to

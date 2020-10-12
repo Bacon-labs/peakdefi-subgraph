@@ -1,8 +1,8 @@
 import {
     InitFund as InitFundEvent
-} from "../../generated/BetokenFactory/BetokenFactory"
+} from "../../generated/PeakDeFiFactory/PeakDeFiFactory"
 import {
-    BetokenProxy as BetokenProxyTemplate
+    PeakDeFiProxy as PeakDeFiProxyTemplate
 } from '../../generated/templates'
 import { FundRegistry } from "../../generated/schema"
 import * as Utils from '../utils'
@@ -20,5 +20,5 @@ export function handleInitFund(event: InitFundEvent): void {
     fundRegistry.fundProxies = proxies
     fundRegistry.save()
 
-    BetokenProxyTemplate.create(event.params.proxy)
+    PeakDeFiProxyTemplate.create(event.params.proxy)
 }

@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_daiAddr",
+        "name": "_usdcAddr",
         "type": "address"
       },
       {
@@ -18,27 +18,32 @@
       },
       {
         "internalType": "address payable",
-        "name": "_betokenFund",
+        "name": "_peakdefiFund",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_betokenLogic",
+        "name": "_peakdefiLogic",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_betokenLogic2",
+        "name": "_peakdefiLogic2",
         "type": "address"
       },
       {
         "internalType": "address",
-        "name": "_betokenLogic3",
+        "name": "_peakdefiLogic3",
         "type": "address"
       },
       {
         "internalType": "address",
         "name": "_peakRewardAddr",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_peakStakingAddr",
         "type": "address"
       },
       {
@@ -84,72 +89,12 @@
     "type": "event"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "betokenFund",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "betokenLogic",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "betokenLogic2",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "betokenLogic3",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": false,
     "inputs": [],
     "name": "createFund",
     "outputs": [
       {
-        "internalType": "contract BetokenFund",
+        "internalType": "contract PeakDeFiFund",
         "name": "",
         "type": "address"
       }
@@ -159,36 +104,21 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "daiAddr",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract BetokenFund",
+        "internalType": "contract PeakDeFiFund",
         "name": "fund",
         "type": "address"
       },
       {
         "internalType": "string",
-        "name": "kairoName",
+        "name": "reptokenName",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "kairoSymbol",
+        "name": "reptokenSymbol",
         "type": "string"
       },
       {
@@ -212,7 +142,7 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract BetokenFund",
+        "internalType": "contract PeakDeFiFund",
         "name": "fund",
         "type": "address"
       },
@@ -237,7 +167,47 @@
     "constant": false,
     "inputs": [
       {
-        "internalType": "contract BetokenFund",
+        "internalType": "contract PeakDeFiFund",
+        "name": "fund",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_newManagerRepToken",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_maxNewManagersPerCycle",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_reptokenPrice",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_peakManagerStakeRequired",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isPermissioned",
+        "type": "bool"
+      }
+    ],
+    "name": "initFund3",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "contract PeakDeFiFund",
         "name": "fund",
         "type": "address"
       },
@@ -262,7 +232,7 @@
         "type": "address"
       }
     ],
-    "name": "initFund3",
+    "name": "initFund4",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -317,6 +287,96 @@
     "constant": true,
     "inputs": [],
     "name": "peakRewardAddr",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "peakStakingAddr",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "peakdefiFund",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "peakdefiLogic",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "peakdefiLogic2",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "peakdefiLogic3",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "usdcAddr",
     "outputs": [
       {
         "internalType": "address",

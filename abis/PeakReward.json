@@ -10,6 +10,21 @@
         "internalType": "address",
         "name": "_peakStaking",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_peakToken",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_stablecoin",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_oracle",
+        "type": "address"
       }
     ],
     "payable": false,
@@ -114,6 +129,25 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "peakReward",
+        "type": "uint256"
+      }
+    ],
+    "name": "ReceiveRankReward",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "referrer",
         "type": "address"
@@ -149,6 +183,21 @@
     "type": "event"
   },
   {
+    "constant": true,
+    "inputs": [],
+    "name": "PEAK_MINT_CAP",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -161,6 +210,27 @@
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "canRankUp",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -253,6 +323,53 @@
     "type": "function"
   },
   {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "cvRankOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "downlineRanks",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "constant": false,
     "inputs": [
       {
@@ -262,11 +379,11 @@
       },
       {
         "internalType": "uint256",
-        "name": "decCV",
+        "name": "incCVInPeak",
         "type": "uint256"
       }
     ],
-    "name": "decrementCareerValueInDai",
+    "name": "incrementCareerValueInPeak",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -286,27 +403,7 @@
         "type": "uint256"
       }
     ],
-    "name": "incrementCareerValueInDai",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "user",
-        "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "incCVInPeak",
-        "type": "uint256"
-      }
-    ],
-    "name": "incrementCareerValueInPeak",
+    "name": "incrementCareerValueInUsdc",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -371,19 +468,28 @@
   },
   {
     "constant": true,
-    "inputs": [
+    "inputs": [],
+    "name": "mintedPeakTokens",
+    "outputs": [
       {
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
       }
     ],
-    "name": "numUsersWithRank",
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "oracle",
     "outputs": [
       {
-        "internalType": "uint256",
+        "internalType": "contract IUniswapOracle",
         "name": "",
-        "type": "uint256"
+        "type": "address"
       }
     ],
     "payable": false,
@@ -443,14 +549,55 @@
   },
   {
     "constant": true,
+    "inputs": [],
+    "name": "peakToken",
+    "outputs": [
+      {
+        "internalType": "contract PeakToken",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [
       {
         "internalType": "address",
-        "name": "user",
+        "name": "",
         "type": "address"
       }
     ],
     "name": "rankOf",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "rankReward",
     "outputs": [
       {
         "internalType": "uint256",
@@ -481,6 +628,21 @@
     ],
     "payable": false,
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      }
+    ],
+    "name": "rankUp",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -531,6 +693,21 @@
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "stablecoin",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
     "type": "function"
   }
 ]
