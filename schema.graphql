@@ -133,6 +133,7 @@ type Fund @entity {
   #againstVotes: [BigDecimal!]!
   #upgradeSignalStrength: BigDecimal!
   versionNum: BigInt!
+  isPermissioned: Boolean!
 }
 
 type DataPoint @entity {

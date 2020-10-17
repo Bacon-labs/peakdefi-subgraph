@@ -22,9 +22,9 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
   // initialize fund entity
   let fundID = event.address.toHex()
   let fund_entity = Fund.load(fundID)
+  let fund = PeakDeFiFund.bind(event.params._newFundAddr)
   if (fund_entity == null) {
     fund_entity = new Fund(fundID)
-    let fund = PeakDeFiFund.bind(event.params._newFundAddr)
     let reptoken = MiniMeToken.bind(fund.controlTokenAddr())
     let shares = MiniMeToken.bind(fund.shareTokenAddr())
     fund_entity.totalFundsInUSDC = Utils.normalize(fund.totalFundsInUSDC())
@@ -53,6 +53,7 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
     fund_entity.versionNum = fund_entity.versionNum.plus(BigInt.fromI32(1))
   }
 
+  fund_entity.isPermissioned = fund.isPermissioned()
   fund_entity.address = event.params._newFundAddr.toHex()
   fund_entity.lastProcessedBlock = event.block.number
   fund_entity.hasFinalizedNextVersion = false
