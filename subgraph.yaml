@@ -4,7 +4,7 @@ schema:
 dataSources:
   - kind: ethereum/contract
     name: PeakDeFiFactory
-    network: rinkeby
+    network: mainnet
     source:
       address: '0xd67C1CA03B71556F02d9Aa9EfBE1424b56C7FC0C'
       abi: PeakDeFiFactory
@@ -27,7 +27,7 @@ dataSources:
       file: ./src/mappings/peakdefiFactory.ts
   - kind: ethereum/contract
     name: PeakReward
-    network: rinkeby
+    network: mainnet
     source:
       address: '0x08b22f74Ac64985B4A99F2bd268b8ba024A61cF3'
       abi: PeakReward
@@ -59,7 +59,7 @@ dataSources:
       file: ./src/mappings/peakReward.ts
   - kind: ethereum/contract
     name: PeakStaking
-    network: rinkeby
+    network: mainnet
     source:
       address: '0x1415825d0D257FdBE9C5311242905546afa95fF6'
       abi: PeakStaking
@@ -93,7 +93,7 @@ dataSources:
 templates:
   - kind: ethereum/contract
     name: PeakDeFiProxy
-    network: rinkeby
+    network: mainnet
     source:
       abi: PeakDeFiProxy
     mapping:
@@ -116,7 +116,7 @@ templates:
       file: ./src/mappings/peakdefiProxy.ts
   - kind: ethereum/contract
     name: PeakDeFiFund
-    network: rinkeby
+    network: mainnet
     source:
       abi: PeakDeFiFund
     mapping:
@@ -142,8 +142,8 @@ templates:
           file: ./abis/PeakDeFiFund.json
         - name: KyberNetwork
           file: ./abis/KyberNetwork.json
-      #blockHandlers:
-      #  - handler: handleBlock
+      blockHandlers:
+        - handler: handleBlock
       eventHandlers:
         - event: ChangedPhase(indexed uint256,indexed uint256,uint256,uint256)
           handler: handleChangedPhase
@@ -173,7 +173,7 @@ templates:
           handler: handleBurnDeadman
   - kind: ethereum/contract
     name: MiniMeToken
-    network: rinkeby
+    network: mainnet
     source:
       abi: MiniMeToken
     mapping:
