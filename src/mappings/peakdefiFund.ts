@@ -51,7 +51,7 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
   let reptoken = MiniMeToken.bind(fund.controlTokenAddr())
 
   Utils.updateTotalFunds(context)
-  entity.totalFundsInUSDC = Utils.normalize(event.params._totalFundsInUSDC)
+  entity.totalFundsInUSDC = Utils.normalize(event.params._totalFundsInUSDC, Utils.USDC_DECIMALS)
 
   // record cycle ROI
   let shouldRecordROI = event.params._newPhase.equals(Utils.ZERO_INT) && !event.params._cycleNumber.equals(BigInt.fromI32(1)) && event.params._cycleNumber.equals(BigInt.fromI32(entity.cycleROIHistory.length + 2))
@@ -126,7 +126,7 @@ export function handleDeposit(event: DepositEvent): void {
     Utils.getFundID(context) + '-' + event.transaction.hash.toHex() + "-" + event.logIndex.toString()
   )
   entity.fund = Utils.getFundID(context)
-  entity.amountInUSDC = Utils.normalize(event.params._usdcAmount)
+  entity.amountInUSDC = Utils.normalize(event.params._usdcAmount, Utils.USDC_DECIMALS)
   entity.timestamp = event.params._timestamp
   entity.isDeposit = true
   entity.txHash = event.transaction.hash.toHex()
@@ -159,7 +159,7 @@ export function handleWithdraw(event: WithdrawEvent): void {
     Utils.getFundID(context) + '-' + event.transaction.hash.toHex() + "-" + event.logIndex.toString()
   )
   entity.fund = Utils.getFundID(context)
-  entity.amountInUSDC = Utils.normalize(event.params._usdcAmount)
+  entity.amountInUSDC = Utils.normalize(event.params._usdcAmount, Utils.USDC_DECIMALS)
   entity.timestamp = event.params._timestamp
   entity.isDeposit = false
   entity.txHash = event.transaction.hash.toHex()
@@ -260,7 +260,7 @@ export function handleCreatedCompoundOrder(
   entity.cycleNumber = event.params._cycleNumber
   entity.tokenAddress = event.params._tokenAddress.toHex()
   entity.stake = Utils.normalize(event.params._stakeInWeis)
-  entity.collateralAmountInUSDC = Utils.normalize(event.params._costUSDCAmount)
+  entity.collateralAmountInUSDC = Utils.normalize(event.params._costUSDCAmount, Utils.USDC_DECIMALS)
   entity.buyTokenPrice = Utils.getPriceOfToken(event.params._tokenAddress, Utils.ZERO_INT)
   entity.buyTime = event.block.timestamp
   entity.sellTime = Utils.ZERO_INT
@@ -272,12 +272,12 @@ export function handleCreatedCompoundOrder(
 
   let contract = CompoundOrderContract.bind(event.params._order)
   entity.marketCollateralFactor = Utils.normalize(contract.getMarketCollateralFactor())
-  entity.collateralRatio = Utils.normalize(contract.getCurrentCollateralRatioInUSDC())
+  entity.collateralRatio = Utils.normalize(contract.getCurrentCollateralRatioInUSDC(), Utils.USDC_DECIMALS)
   let currProfitObj = contract.getCurrentProfitInUSDC() // value0: isNegative, value1: value
-  entity.currProfit = Utils.normalize(currProfitObj.value1.times(currProfitObj.value0 ? BigInt.fromI32(-1) : BigInt.fromI32(1)))
-  entity.currCollateral = Utils.normalize(contract.getCurrentCollateralInUSDC())
-  entity.currBorrow = Utils.normalize(contract.getCurrentBorrowInUSDC())
-  entity.currCash = Utils.normalize(contract.getCurrentCashInUSDC())
+  entity.currProfit = Utils.normalize(currProfitObj.value1.times(currProfitObj.value0 ? BigInt.fromI32(-1) : BigInt.fromI32(1)), Utils.USDC_DECIMALS)
+  entity.currCollateral = Utils.normalize(contract.getCurrentCollateralInUSDC(), Utils.USDC_DECIMALS)
+  entity.currBorrow = Utils.normalize(contract.getCurrentBorrowInUSDC(), Utils.USDC_DECIMALS)
+  entity.currCash = Utils.normalize(contract.getCurrentCashInUSDC(), Utils.USDC_DECIMALS)
   entity.save()
 
   let manager = Manager.load(Utils.getFundID(context) + '-' + event.params._sender.toHex())
@@ -302,7 +302,7 @@ export function handleSoldCompoundOrder(event: SoldCompoundOrderEvent): void {
   let entity = CompoundOrder.load(id)
   entity.isSold = true
   entity.sellTime = event.block.timestamp
-  entity.outputAmount = Utils.normalize(event.params._earnedUSDCAmount)
+  entity.outputAmount = Utils.normalize(event.params._earnedUSDCAmount, Utils.USDC_DECIMALS)
   entity.save()
 
   Utils.updateTotalFunds(context)
@@ -328,7 +328,7 @@ export function handleCommissionPaid(event: CommissionPaidEvent): void {
   entity.fund = Utils.getFundID(context)
   entity.timestamp = event.block.timestamp
   entity.cycleNumber = event.params._cycleNumber
-  entity.amountInUSDC = Utils.normalize(event.params._commission)
+  entity.amountInUSDC = Utils.normalize(event.params._commission, Utils.USDC_DECIMALS)
   entity.txHash = event.transaction.hash.toHex()
   entity.save()
 
@@ -346,7 +346,7 @@ export function handleTotalCommissionPaid(event: TotalCommissionPaidEvent): void
   let context = dataSource.context()
 
   let entity = Utils.getFundEntity(context)
-  entity.cycleTotalCommission = Utils.normalize(event.params._totalCommissionInUSDC)
+  entity.cycleTotalCommission = Utils.normalize(event.params._totalCommissionInUSDC, Utils.USDC_DECIMALS)
   entity.save()
 }
 
@@ -569,11 +569,11 @@ export function handleBlock(block: ethereum.Block): void {
               order.collateralRatio = Utils.normalize(contract.getCurrentCollateralRatioInUSDC())
 
               let currProfitObj = contract.getCurrentProfitInUSDC() // value0: isNegative, value1: value
-              order.currProfit = Utils.normalize(currProfitObj.value1.times(currProfitObj.value0 ? BigInt.fromI32(-1) : BigInt.fromI32(1)))
+              order.currProfit = Utils.normalize(currProfitObj.value1.times(currProfitObj.value0 ? BigInt.fromI32(-1) : BigInt.fromI32(1)), Utils.USDC_DECIMALS)
 
-              order.currCollateral = Utils.normalize(contract.getCurrentCollateralInUSDC())
-              order.currBorrow = Utils.normalize(contract.getCurrentBorrowInUSDC())
-              order.currCash = Utils.normalize(contract.getCurrentCashInUSDC())
+              order.currCollateral = Utils.normalize(contract.getCurrentCollateralInUSDC(), Utils.USDC_DECIMALS)
+              order.currBorrow = Utils.normalize(contract.getCurrentBorrowInUSDC(), Utils.USDC_DECIMALS)
+              order.currCash = Utils.normalize(contract.getCurrentCashInUSDC(), Utils.USDC_DECIMALS)
               order.save()
 
               // record stake value

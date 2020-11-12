@@ -38,6 +38,7 @@ export let PRICE_INTERVAL = BigInt.fromI32(5 * 60 / 15) // 5 minutes if avg bloc
 export let LATEST_BLOCK = BigInt.fromI32(7009000 + 100)
 
 export let PEAK_DECIMALS = 8
+export let USDC_DECIMALS = 6
 
 // Helpers
 
@@ -58,7 +59,7 @@ export function updateTotalFunds(context: DataSourceContext): void {
   let fundContract = PeakDeFiFund.bind(fundAddress)
   let reptoken = reptokenContract(fundAddress)
   let shares = sharesContract(fundAddress)
-  fund.totalFundsInUSDC = normalize(fundContract.totalFundsInUSDC())
+  fund.totalFundsInUSDC = normalize(fundContract.totalFundsInUSDC(), USDC_DECIMALS)
   fund.reptokenPrice = normalize(fundContract.reptokenPrice())
   fund.reptokenTotalSupply = normalize(reptoken.totalSupply())
   fund.sharesTotalSupply = normalize(shares.totalSupply())
@@ -108,13 +109,13 @@ export function getPriceOfToken(tokenAddress: Address, tokenAmount: BigInt): Big
     if (result.reverted) {
       return ZERO_DEC
     }
-    return normalize(result.value.value0)
+    return normalize(result.value.value0, USDC_DECIMALS)
   } else {
     let result = kyber.try_getExpectedRate(tokenAddress, USDC_ADDR, tenPow(decimals))
     if (result.reverted) {
       return ZERO_DEC
     }
-    return normalize(result.value.value0)
+    return normalize(result.value.value0, USDC_DECIMALS)
   }
 }
 

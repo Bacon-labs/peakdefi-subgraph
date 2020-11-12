@@ -27,7 +27,7 @@ export function handleUpdatedFundAddress(event: UpdatedFundAddressEvent): void {
     fund_entity = new Fund(fundID)
     let reptoken = MiniMeToken.bind(fund.controlTokenAddr())
     let shares = MiniMeToken.bind(fund.shareTokenAddr())
-    fund_entity.totalFundsInUSDC = Utils.normalize(fund.totalFundsInUSDC())
+    fund_entity.totalFundsInUSDC = Utils.normalize(fund.totalFundsInUSDC(), Utils.USDC_DECIMALS)
     fund_entity.totalFundsAtPhaseStart = fund_entity.totalFundsInUSDC
     fund_entity.reptokenPrice = Utils.normalize(fund.reptokenPrice())
     fund_entity.reptokenTotalSupply = Utils.normalize(reptoken.totalSupply())
