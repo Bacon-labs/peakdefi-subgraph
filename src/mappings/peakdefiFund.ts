@@ -57,7 +57,7 @@ export function handleChangedPhase(event: ChangedPhaseEvent): void {
   let shouldRecordROI = event.params._newPhase.equals(Utils.ZERO_INT) && !event.params._cycleNumber.equals(BigInt.fromI32(1)) && event.params._cycleNumber.equals(BigInt.fromI32(entity.cycleROIHistory.length + 2))
   if (shouldRecordROI) {
     let currentTotalFundsInUSDC = entity.totalFundsInUSDC
-    let cycleROI = currentTotalFundsInUSDC.minus(entity.totalFundsAtPhaseStart).div(entity.totalFundsAtPhaseStart)
+    let cycleROI = entity.totalFundsAtPhaseStart.equals(Utils.ZERO_DEC) ? Utils.ZERO_DEC : currentTotalFundsInUSDC.minus(entity.totalFundsAtPhaseStart).div(entity.totalFundsAtPhaseStart)
     let cycleROIHistory = entity.cycleROIHistory
     cycleROIHistory.push(cycleROI)
     entity.cycleROIHistory = cycleROIHistory
@@ -615,7 +615,7 @@ export function handleBlock(block: ethereum.Block): void {
       }
 
       // record AUM
-      fund.aum = fund.totalFundsInUSDC.times(tentativeTotalInvestmentValueInRepToken).div(fund.reptokenTotalSupply)
+      fund.aum = fund.reptokenTotalSupply.equals(Utils.ZERO_DEC) ? Utils.ZERO_DEC : fund.totalFundsInUSDC.times(tentativeTotalInvestmentValueInRepToken).div(fund.reptokenTotalSupply)
       // record PeakDeFi Shares price
       if (fund.sharesTotalSupply.equals(Utils.ZERO_DEC)) {
         fund.sharesPrice = Utils.ONE_DEC
