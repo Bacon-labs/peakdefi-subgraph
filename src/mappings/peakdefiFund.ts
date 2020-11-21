@@ -615,7 +615,7 @@ export function handleBlock(block: ethereum.Block): void {
       }
 
       // record AUM
-      fund.aum = fund.reptokenTotalSupply.equals(Utils.ZERO_DEC) ? Utils.ZERO_DEC : fund.totalFundsInUSDC.times(tentativeTotalInvestmentValueInRepToken).div(fund.reptokenTotalSupply)
+      fund.aum = fund.reptokenTotalSupply.equals(Utils.ZERO_DEC) ? fund.totalFundsInUSDC : fund.totalFundsInUSDC.times(tentativeTotalInvestmentValueInRepToken).div(fund.reptokenTotalSupply)
       // record PeakDeFi Shares price
       if (fund.sharesTotalSupply.equals(Utils.ZERO_DEC)) {
         fund.sharesPrice = Utils.ONE_DEC
